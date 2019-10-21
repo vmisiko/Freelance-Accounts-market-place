@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% extends "base.html"%}
+<html lang="en
+" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+  </head>
+  {% load  staticfiles %}
+
+  <link rel = 'stylesheet' href = "{% static "css/bootstrap.min.css" %}" type ='text/CSS' >
+
+  <body>
+
+    {% block content %}
+
+
+          <div class = 'container'  >
+              <p>hi! its good to have no bugs</p>
+              {% for i in object_list %}
+              <li>{{i }}</li>
+              {% endfor %}
+          </div>
+
+    {% endblock%}
+
+  </body>
+</html>
