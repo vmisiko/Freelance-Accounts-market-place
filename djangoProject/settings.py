@@ -46,6 +46,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_countries',
     'paypal.standard.ipn',
+
+    'mpesa_api.core',
+    'mpesa_api.util',
+    'rest_framework',
+    'rangefilter',
+    
     
 ]
 
@@ -130,6 +136,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "Home/media")
+
 # All Auth AuthenticationMiddleware
 
 AUTHENTICATION_BACKENDS = (
@@ -149,3 +159,14 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # paypal  Configuration
 PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
 PAYPAL_TEST = True
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+    ]
+}
+### mpesa Payment
+

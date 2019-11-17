@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
-# from .models import Order, OrderItem
+from .models import Order, OrderItem
 from paypal.standard.models import ST_PP_COMPLETED
-# from paypal.standard.ipn.signals import valid_ipn_received
-# from django.dispatch import receiver
+from paypal.standard.ipn.signals import valid_ipn_received
+from django.dispatch import receiver
  
  
 # @receiver(valid_ipn_received)

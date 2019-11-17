@@ -1,11 +1,28 @@
+from datetime import datetime
 from django.db import models
 from django.shortcuts import reverse
 from django.conf import settings
 from django_countries.fields import CountryField
+
+from django.template.defaultfilters import slugify
 from paypal.standard.ipn.signals import valid_ipn_received
+from autoslug import AutoSlugField
+from django.utils import timezone
 
 
-# Create your models here.
+class LNMOnline(models.Model):
+    MerchantRequestID= models.CharField(blank = True,null = True,max_length = 50)
+    CheckoutRequestID= models.CharField(blank = True,null = True,max_length = 50)
+    ResultCode= models.IntegerField(blank = True,null = True)
+    ResultDesc= models.CharField(blank = True,null = True, max_length = 50)
+    Amount = models.FloatField(blank = True,null = True)
+    MpesaReceiptNumber = models.CharField(blank = True,null = True, max_length = 15)
+    Balance = models.CharField(default = 0,max_length = 12)
+    TranscationDate = models.DateTimeField(blank = True,null = True)
+    PhoneNumber = models.CharField(blank = True,null = True, max_length = 15)
+    paid = models.BooleanField(default = False)
+# Create your models here. 
+
 class Products(models.Model):
     title = models.TextField()
     description = models.TextField()
@@ -31,14 +48,31 @@ Label_choices={
 
 }
 
+Level_choices = {
+    ("Ivy","Ivy"),
+    ("Juniour","Junior"),
+    ("Intermediate","Intermediate"),
+    ("r","Seni0r"),
+    
+
+}
+
 class Item(models.Model):
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE, editable = False)
+    created_at = models.DateTimeField(auto_now_add= True, blank = True, null = True )
     title = models.CharField(max_length = 100)
-    price = models.FloatField()
+    price = models.FloatField(default = 0.0)
     discountprice = models.FloatField(blank= True, null = True)
     category = models.CharField(choices = Category_choices, max_length=2)
     label = models.CharField(choices = Label_choices, max_length=1)
-    slug = models.SlugField()
+    Level = models.CharField(choices = Level_choices, max_length = 15 ,blank= True, null = True)
+    finished_orders = models.IntegerField(default = 1)
+    rating = models.IntegerField(default = 50 )
+    Reviews =models.IntegerField( default = 1)
+    profile = models.CharField( max_length = 20)
     description = models.TextField()
+    diplay_pic = models.ImageField(upload_to = "display_pics/%Y%m%d/", max_length =255 )
+    contact = models.CharField(max_length=15 ,null = True,blank= True)
 
 
     def __str__(self):
@@ -46,18 +80,42 @@ class Item(models.Model):
 
     def get_absolute_url(self):
         return reverse("Home:product", kwargs ={
-            'slug': self.slug
+            'pk': self.pk
         })
 
     def get_add_to_cart_url(self):
         return reverse("Home:add_to_cart", kwargs ={
-            'slug': self.slug
+            'pk': self.pk
         })
+    def get_discount_price(self):
+        discount = self.price - self.discountprice
+        return discount
 
     def get_remove_from_cart_url(self):
         return reverse("Home:remove_from_cart", kwargs ={
-            'slug': self.slug
+            'pk': self.pk
         })
+    # def save(self, *args, **kwargs):
+    #     self.slug = slugify(self.title)
+    #     super(Item, self).save(*args, **kwargs)
+
+    def get_days(self):
+        d1 = timezone.now()
+        d2 = self.created_at
+        
+        dya =  abs(d1-d2).days
+        mytuple = (str(dya), "days")
+        days = " ".join(mytuple)
+        if dya > 0:
+            return days
+        else:
+            seconds = abs(d1-d2).seconds
+            houred = round(seconds / 3600)
+            
+            mytuple = (str(houred), "hours")
+            hours = " ".join(mytuple)
+            return hours
+        
 
 
 

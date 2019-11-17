@@ -1,0 +1,22 @@
+<html>
+        {% extends "base.html"%}
+        {%  load crispy_forms_tags %}
+        {% load  staticfiles %}
+  <head>
+    <script type="text/javascript">
+
+      function handleIt() {
+        alert("hello");
+      }
+
+    </script>
+  </head>
+
+<body>
+    {% block content %}
+    <form name="myform" action="javascript:handleIt()">
+      <input name="Submit"  type="submit" value="Update"/>
+    </form>
+    {% endblock %}
+</body>
+</html>
