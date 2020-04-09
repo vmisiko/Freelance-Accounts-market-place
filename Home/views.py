@@ -1,249 +1,49 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from . models import Products,Item, OrderItem, Order,BillingAddress, LNMOnline
+from . models import Products,Item, OrderItem, Order,BillingAddress
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import CheckoutForm,Mpesa_checkout, Mpesa_c2b_checkout
-from django.urls import reverse
+from .forms import CheckoutForm,Mpesa_checkout, Mpesa_c2b_checkout, SaleAccountForm
+from django.urls import reverse,reverse_lazy
 from paypal.standard.forms import PayPalPaymentsForm
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
-from .serializers import LNMOnlineSerializer
+# from .serializers import LNMOnlineSerializer
 from djangoProject.mpesa.LipaNaMpesa import lipa_na_mpesa
 from rest_framework.response import Response
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import JsonResponse
+from notifications.signals import notify
+
+import random
+import string
+
+sender_batch_id =''.join(
+    random.choice(string.ascii_uppercase) for i in range(12)
+        
+    )
+
 # Create your views here
 
-def callback1_variables(result_code, amount):
-    result = result_code
-    amount = amount
+class SaleAccountView(CreateView):
+    template_name = 'sale_account.html'
+    form_class = SaleAccountForm
+    success_message = 'Success: Book was created.'
+    # success_url = reverse_lazy('home')
 
-    if result:
-        return (result, amount)
-    else:
-        return None
-@csrf_exempt
-def validate_mpesa_code(request):
-    order = Order.objects.get(user = request.user,  ordered = False)
-    amount = order.get_total()
-    
-    # form = Mpesa_checkout(request.POST or None)
-    # form2 = Mpesa_c2b_checkout(request.POST or None)
-    data = {}  
-    mpesa_code = request.GET.get('mpesa_code', None)
-    if mpesa_code:
-        result1 = LNMOnline.objects.filter( MpesaReceiptNumber__iexact=mpesa_code, paid = False).exists()
-        print(result1)
-
-        # data["message"] = "Mpesa Code Does exist"
-                
-        # return JsonResponse(data)
-        if result1 == True: 
-
-            result = LNMOnline.objects.get(MpesaReceiptNumber = mpesa_code, paid = False)
-            
-            result.paid = True
-
-            result.save()
-
-            order.ordered = True
-            order.items.ordered = True
-            # order.items.ordered = True
-            order.save()
-
-            data["message"] = "Transaction Successful"
-            
-            return JsonResponse(data)
-
-        else:
-
-            data["message"] = "Mpesa Code Does not exist"
-                
-            return JsonResponse(data)
-    else:
-        data["message"] = "Enter Mpesa Code"
-                
-        return JsonResponse(data)
-
-       
-
-@csrf_exempt
-def lnm_validate_post(request):
-    order = Order.objects.get(user = request.user,  ordered = False)
-    amount = order.get_total()
-    # form = Mpesa_checkout(request.POST or None)
-    # form2 = Mpesa_c2b_checkout(request.POST or None)
-    data = {}  
-    phone_number = request.GET.get('phone_number', None)
-    if phone_number:
-        
-        try: 
-            lipa_na_mpesa(phone_number = phone_number, amount = amount, AccountReference = "123456" )
-
-            data["message"] = "Stk-push Successful!! \n Enter The mpesa code "
-                
-            return JsonResponse(data)
-           
-                
-        except:
-            # messages.warning(request, " Type in the correct Phone Number ")
-            data[" err_message"] =  " Type in the correct Phone Number "
-            return JsonResponse(data)
-    else :
-        # messages.warning(request, " The form is not valid ")
-        data[" err_message"] =  " Type in the correct Phone Number "
-        return JsonResponse(data)
-
-
-
-class LNMCallbackUrl(CreateAPIView):
-    queryset = LNMOnline.objects.all()
-    serializer_class = LNMOnlineSerializer
-
-    permission_classes = [AllowAny]
-
-
-    def create(self, request):
-        print(request.data, "this is data")
-        result_description = request.data["Body"]["stkCallback"]["ResultDesc"]
-
-        try:
-            if result_description != "[STK_CB - ]DS timeout.":
-
-                merchant_request_id = request.data["Body"]["stkCallback"]["MerchantRequestID"]
-                print(merchant_request_id)
-                checkout_request_id = request.data["Body"]["stkCallback"]["CheckoutRequestID"]
-                print(checkout_request_id)
-                result_code = request.data["Body"]["stkCallback"]["ResultCode"]
-                print(result_code)
-                result_description = request.data["Body"]["stkCallback"]["ResultDesc"]
-                print(result_description)
-                amount = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
-                print(amount)
-                mpesa_reciept_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["Value"] 
-                print(mpesa_reciept_number)
-                # balance = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][2]["Value"]
-                # print(balance)
-                transaction_date = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][3]["Value"]
-                print(transaction_date)
-                phone_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
-                print(phone_number) 
-
-            else:
-                print('the result descrption is timeout')
-        except:
-            print("error")
-
-        from datetime import datetime
-        str_transaction_date = str(transaction_date)
-        print(str_transaction_date)
-        transaction_datetime = datetime.strptime(str_transaction_date,"%Y%m%d%H%M%S")
-        print(transaction_datetime) 
-
-        transaction = LNMOnline.objects.create(
-            MerchantRequestID  = merchant_request_id,
-            CheckoutRequestID = checkout_request_id,
-            ResultCode = result_code,
-            ResultDesc = result_description,
-            Amount = amount,
-            MpesaReceiptNumber = mpesa_reciept_number,
-            Balance = 0,
-            TranscationDate = transaction_datetime,
-            PhoneNumber = phone_number
-        )
-        
-        transaction.save() 
-        
-        data = {
-             "result_code" :result_code ,
-             "amount": amount
-
-                 }
-
-        callback1_variables(result_code, amount)
-
-        return Response(data)
-    
-
-def see_example(request):
-
-
-    return render(request, 'example.html')
-    
-
-# class view_for_mpesa(generic.View):
-
-def view_for_mpesa(request):
-    
-    order = Order.objects.get(user =request.user,  ordered = False)
-    print(order.id, "this is the cool order number")
-    form = Mpesa_checkout()
-    form2 = Mpesa_c2b_checkout()
-    
-        
-    context = {"form": form,
-                "order":  order,
-                "form2" : form2
-    }
-    
-    return render(request, "payment_via_mpesa.html", context)
-
-    # def post(self, *args, **kwargs):
-    
-    #     order = Order.objects.get(user =self.request.user,  ordered = False)
-    #     print(order.id, "this is the cool order number")
-    #     amount = order.get_total()
-    #     form = Mpesa_checkout(self.request.POST or None)
-    #     form2 = Mpesa_c2b_checkout(self.request.POST or None)
-        
-    #     if form.is_valid():
-    #         phone_number  = form.cleaned_data.get('phone_number')
-    #         print(phone_number)
-
-    #          # registers the validate and confirmation url's for b2c
-    #         # starts online checkout on given number
-            
-            
-    #         try: 
-    #             lipa_na_mpesa(phone_number = phone_number, amount = amount, AccountReference = "123456" )
-                
-    #             messages.info(self.request, " The form is valid ")
-    #             result = callback1_variables()
-    #             data = {
-    #                 "result_code": result[0],
-            
-    #             }
-                
-    #             if result[0] == 0:
-    #                 data['message'] = 'The transaction has been completed successfully!!'
-    #             else:
-    #                 data["error_message"] = "The transaction was not successful, please try again"
-
-    #             return(data)
-                
-    #         except:
-    #             messages.warning(self.request, " Type in the correct Phone Number ")
-    #             return render(self.request, "payment_cancelled.html")
-    #     else :
-    #         messages.warning(self.request, " The form is not valid ")
-    #         return render(self.request, "payment_cancelled.html")
-
+   
 @csrf_exempt
 def payment_done(request):
-    order = get_object_or_404(Order, user = request.user, ordered = False)
-
-    result = callback1_variables()
-
-    
+    # order = get_object_or_404(Order, user = request.user, ordered = False)
+    # result = callback1_variables()
 
     context = {
-        "result": result
+        "result": "hey you"
     }
     
     return render(request, 'payment_done.html' ,context)
@@ -262,10 +62,11 @@ def view_paypal(request):
     # orderitem = OrderItem.objects.get(user =request.user,  ordered = False)
     # What you want the button to do.
     paypal_dict = {
+
         "business": "misikovictor123@gmail.com",
         "amount": str(order.get_total()),
         "item_name": 'Order {}'.format(order.id),
-        "invoice": str(order.id),
+        "invoice": sender_batch_id,
         "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
         "return": request.build_absolute_uri(reverse('Home:payment-done')),
         "cancel_return": request.build_absolute_uri(reverse('Home:payment-cancelled')),
@@ -283,8 +84,36 @@ def view_paypal(request):
 
 class index(generic.ListView):
     model = Item
-    paginate_by = 10
+    paginate_by = 6
     template_name = "home-page.html"
+
+    def get_queryset(self):
+        queryset =  super(index, self).get_queryset()
+
+        notify.send(self.request.user, recipient=self.request.user, verb =" hey your first notification")
+       
+        if self.request.method == "GET" and self.request.GET:
+
+            kall = self.request.GET["kall"]
+            verb = self.request.GET["verb"]
+            bid = self.request.GET["bid"]
+            take = self.request.GET["take"]
+
+            if kall =="kall":
+                return queryset
+
+            if verb == "verb":
+                queryset = queryset.filter(category = "s")
+                return queryset
+            if bid == "bid":
+                queryset = queryset.filter(category = "sw")
+                return queryset
+            if take == "take":
+                queryset = queryset.filter(category = "OW")
+                return queryset
+
+        return queryset
+
 
 class OrderSummaryView(LoginRequiredMixin, generic.View):
 
@@ -309,8 +138,21 @@ class Product(generic.DetailView):
     model = Item
     template_name = "product-page.html"
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get the context
+        context = super(Product, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        obj = self.get_object()
+        r_item = Item.objects.filter(title = obj.title)[:3]
+        nr_item = Item.objects.all()[:3]
+        
+        context["r_item"] = r_item
+        context["nr_item"] = nr_item
 
-class Checkout(generic.View):
+        return context
+
+
+class Checkout(LoginRequiredMixin,generic.View):
     def get(self, *args, **kwargs):
         form = CheckoutForm()
         order = Order.objects.get(user = self.request.user,  ordered = False)
@@ -319,45 +161,61 @@ class Checkout(generic.View):
             "form": form,
             'order': order
         }
+        
         return render(self.request, "checkout-page.html", context )
 
 
     def post(self, *args, **kwargs):
  
         form = CheckoutForm(self.request.POST or None)
+        print(self.request.POST)
         try:
             order = Order.objects.get(user = self.request.user,  ordered = False)
             
             if form.is_valid():
             
                 street_address  = form.cleaned_data.get('street_address')
+                print(street_address)
+
                 apartment_address = form.cleaned_data.get('apartment_address')
+                print(apartment_address)
                 country = form.cleaned_data.get('country')
-                zip = form.cleaned_data.get('zip')
+                print(country)
+                zip_code = form.cleaned_data.get('zip')
                 same_billing_address = form.cleaned_data.get('same_billing_address')
                 save_info = form.cleaned_data.get('save_info')
                 payment_option =form.cleaned_data.get('payment_option')
+                phone_number = form.cleaned_data.get("phone_number")
                 billing_address = BillingAddress(
                     user = self.request.user,
                     street_address = street_address,
                     apartment_address = apartment_address,
                     country = country,
-                    zip_code = zip
+                    phone_number = phone_number,
+                    zip_code = zip_code,
                 )
 
                 billing_address.save()
                 order.billing_address = billing_address
 
-                if payment_option == "p":
+                if payment_option == "P":
                     return redirect("Home:payment"  )
+                    
                 if payment_option =="M":
                     # messages.info(self.request, "Mpesa payment Mode Not yet Implemented")
-                    return redirect("Home:mpesa_payment")  
+                    return redirect("MpesaApp:mpesa_payment")  
                 else:
                     messages.warning(self.request, "Invalid payment option selected")
+                    print("Invalid payment option selected")
                     return redirect("Home:checkout")
+                    
       
                 self.request.session['order_id'] = order.id 
+            else:
+                messages.warning(self.request, "invalid pay")
+                print(form.errors)
+                print("invalid form")
+                return redirect("Home:checkout")
 
         except ObjectDoesNotExist:
 
@@ -383,6 +241,7 @@ def add_to_cart(request, pk):
         else:
             messages.info(request, "This item was added to your cart ")
             order.items.add(order_item)
+            
             return redirect("Home:order-summary")
     else:
         ordered_date = timezone.now()
@@ -446,16 +305,12 @@ def remove_single_item_from_cart(request, pk):
 
     return redirect("Home:order-summary" )
 
+
 class Sell_item(CreateView):
     model = Item
     fields = '__all__'
     template_name = "sell_item.html"
 
-
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super(Sell_item, self).form_valid(form)
-    
 class Sell_item_Update(UpdateView):
     model = Item
     fields = '__all__'

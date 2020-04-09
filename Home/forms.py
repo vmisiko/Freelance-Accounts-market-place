@@ -3,27 +3,43 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 from django.forms import ModelForm
 from .models import Item
+from phonenumber_field.formfields import PhoneNumberField
+
+
+from bootstrap_modal_forms.forms import BSModalForm
+
+class SaleAccountForm(BSModalForm):
+    class Meta:
+        model = Item
+        fields = "__all__"
+
 
 PAYMENT_CHOICES = (
-('p','Paypal'),
+('P','Paypal'),
 ('M','Mpesa')
 )
 class CheckoutForm(forms.Form):
     street_address = forms.CharField( widget = forms.TextInput(attrs = {
-    'placeholder':"Address 1 for street "
+    'placeholder':"Address 1 for street ","class": "form-control"
     }) )
     apartment_address = forms.CharField(required = False, widget = forms.TextInput(attrs = {
-    'placeholder':"Address 2 for Apartment or suite"
+    'placeholder':"Address 2 for Apartment or suite","class": "form-control"
     }))
     country = CountryField(blank_label='(select country)').formfield(widget = CountrySelectWidget(attrs = {
     'class': "custom-select d-block w-100"
     }))
-    zip = forms.CharField(widget = forms.TextInput(attrs = {
+    phone_number = PhoneNumberField(widget=forms.TextInput(attrs={'placeholder':('Enter phone number starting with countrycode i,e +2547xxxx '),"class": "form-control" }), 
+            label=("Phone number"), required=True)
+
+    zip_code = forms.CharField(widget = forms.TextInput(attrs = {
         "class": "form-control"
     }))
     same_billing_address = forms.BooleanField(required = False)
+
     save_info =  forms.BooleanField(required = False)
-    payment_option =  forms.ChoiceField(widget = forms.RadioSelect, choices =PAYMENT_CHOICES )
+
+    payment_option =  forms.ChoiceField( widget = forms.RadioSelect, choices=PAYMENT_CHOICES )
+    
 
 class Mpesa_checkout(forms.Form):
     

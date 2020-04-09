@@ -1,0 +1,366 @@
+<html>
+    {% extends "base.html" %}
+    {% load static %}
+    {%  load crispy_forms_tags %}
+
+    <head>
+
+        <title> withrawal </title>
+        <style type="text/css"> 
+          
+        </style>
+        
+    </head>
+<body>
+
+       
+              
+
+        {% block content %}
+
+        <Main class="container mt-5">
+
+          <h1 class="mt-5 pt-5 text-center "> <i> withdraw Cash  </i></h1>
+      
+        <ul class="nav nav-tabs md-tabs col-lg-8 col-md-12 mx-auto" id="myTabMD" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+              aria-selected="true">Request Withdraw</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+              aria-selected="false">  Withdrawal History </a>
+          </li>
+          
+        </ul>
+        <div class="tab-content " id="myTabContentMD">
+          <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
+            <div class="card col-lg-8 col-md-12 mx-auto">
+              <div class="card-header">
+                <h4 class="card-title "> withdraw Cash </h4>
+              
+              </div>
+                    <div class="tab-content card-body" id="myTabContent">
+                      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        
+                          <div class="modal-body">
+
+                            {% if amount == "False" %}
+                            
+                            <div class="alert alert-danger alert-dismissible animated bounceInDown fade show" role="alert">
+                              <P> Sorry, your Account balance is Zero  </P>
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+ 
+                            </div>
+                            {% endif %}
+
+                            <div class="row d-flex justify-content-center ">
+                              <div>
+                                <img class="mx-auto animated rotateIn" src="{% static 'img/mpesa1.jpg' %}" alt="" height= "100"> 
+                              </div>
+                              <div class="pt-2 ">
+                                <a class="blue-text  "> <i class="fab fa-cc-paypal fa-5x animated rotateIn "></i></a>
+                              </div>
+
+                            </div>
+                            
+                           
+                            {% if amount != "False" %}
+                            <form id="post-form" class="">
+                              
+                                {% csrf_token %}
+
+                                <div class= "row">
+                                  <div class="form-group col-lg-6 col-md-12 mb-0">
+                                   
+                                    {{ form.first_name |as_crispy_field}}
+                                  </div>
+
+                                 
+                                    <div class="form-group col-lg-6 col-md-12 mb-0">
+                                      {{ form.last_name |as_crispy_field }}
+                                    </div>
+                                  
+
+                                </div>
+
+                                <div class="form-group  ">
+                                 
+                                  {{ form.payment_mode|as_crispy_field}}
+                                  
+                                </div>
+                                <div class= "row">
+                                  <div class="form-group col-lg-6 col-md-12 mb-0">
+                                   
+                                    {{ form.phone_number | as_crispy_field}}
+                                  </div>
+
+                                 
+                                    <div class="form-group col-lg-6 col-md-12 mb-0">
+                                      {{ form.email | as_crispy_field }}
+                                    </div>
+                                  
+
+                                </div>
+                              
+
+                                <div class="form-group">
+                                 
+                                  {{ form.amount|as_crispy_field}}
+                                  
+                                </div>
+                                <!-- {{ form|crispy }} -->
+                                
+                              <div class=" d-flex justify-content-center">
+                                
+                                <button id="submit-btn" class="btn btn-primary " type="submit">Submit</button>
+
+                                <button id="load_progress" style="display: none;" class="btn btn-primary  " type="button" disabled>
+                                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" ></span>
+                                  Loading...
+                                </button>
+                              </div>
+                              
+                            </form>
+
+                           {% endif %}
+                             </div>
+
+                        </div>
+                     
+                    </div>
+          </div>
+          </div>
+      
+          <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+            <div class="card col-lg-8 col-md-12 mx-auto">
+              <div class="card-header">
+                  <h4 class="card-title"> Transaction History </h4>
+
+              </div> 
+
+              <div class=" card-body table-responsive text-nowrap " style="overflow:auto; height: 500px ">
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th class="col-md-0" scope="col">User</th>
+                        <th scope="col">Payment Mode</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        
+                      </tr>
+                    </thead>
+
+                
+
+                    <tbody>
+                      
+                  {% for payout in payouts %}
+                      <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td class="col-md-0">{{ payout.user}}</td>
+                        {% if payout.payment_mode == "M" %}
+                          <td>M-pesa</td>
+                          {% else %}
+                          <td>Paypal</td>
+                        {% endif %}
+                        <td>$ {{ payout.amount}}</td>
+                        <td>{{ payout.date }}</td>
+                        {% if payout.status == False %}
+                        <td><span class="badge badge-pill purple " style="font-size: medium;"> pending ... </span></td>
+                        {% else %}
+                        <td><span class="badge badge-pill badge-success " style="font-size: medium;"> paid </span></td>
+                        
+                        {% endif %}
+                      </tr>
+                  {%  empty %}
+                      <tr>
+                        <td colspan="6" class="text-center"> You have no previous Transctions </td>
+                      </tr>
+                    
+                  {% endfor %}
+                    
+                    </tbody>
+                  </table>
+                
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </Main>
+      
+
+        <hr class="my-3">
+          
+       
+        <!-- Central Modal Warning Demo-->
+<div class="modal fade left" id="ModalWarning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-notify modal-warning " role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading">Request Denied</p>
+
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col-3 text-center">
+          <i class="fas fa-times fa-5x animated rotateIn infinite"></i>
+        </div>
+        <div class="col-9">
+          <P>
+            Request declined, You requested more than you have in your account.
+          </P>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!--Footer-->
+    <div class="modal-footer justify-content-center">
+      
+      <a type="button" class="btn btn-outline-warning waves-effect" data-dismiss="modal">Dismiss</a>
+    </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+<!-- Central Modal Warning Demo-->
+
+<!-- Central Modal Medium Success -->
+<div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-notify modal-success" role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading lead"> Request Success </p>
+
+      <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+      <div class="text-center">
+        <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s"></i>
+        
+       Your withdrawal request has been sent, awaiting approval and release.It takes less than 24 hours to be approved in a normal business day.
+      
+        
+      </div>
+    </div>
+
+    <!--Footer-->
+    <div class="modal-footer justify-content-center">
+     
+      <a type="button" class="btn btn-outline-success waves-effect" onclick="location.reload(true);" data-dismiss="modal">Dismiss</a>
+    </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+<!-- Central Modal Medium Success-->
+
+        
+{% endblock %}
+        <!-- transaction History  -->
+       
+        
+
+{% block scripts %}
+
+
+<script>
+  
+   $('#post-form').on('submit', function(event){
+    event.preventDefault();
+    // alert("hey laoding");
+    $("#load_progress").show();
+
+    $("#submit-btn").hide();
+
+    var form = $('#post-form');
+    
+    $.ajax({
+      url: "{% url 'dashboard:Validate_withdraw' %}" ,
+      
+      type:"POST" , 
+      async: true,
+      data: $('#post-form').serialize(),
+      dataType: 'json',
+      success: function (data) {
+        // alert(data.message); 
+        if (data.errors == null && data.more == null ) {
+        $("#load_progress").hide();
+        // alert(data.message); 
+        // $("#submit-btn").show();
+        $("#centralModalSuccess").modal("show");
+        $(".section1").hide();
+
+        }
+
+        else if( data.more  != null ) {
+          $("#submit-btn").show();
+          $("#load_progress").hide();
+          $("#ModalWarning").modal("show")
+         
+        }
+
+        else {
+          // alert(data.errors); 
+          $("#submit-btn").show();
+          $("#load_progress").hide();
+          var errors =JSON.parse(data.errors)
+          console.log(errors)
+          console.log(errors["phone_number"])
+          if ($("input").next('p').length) $("input").nextAll('p').empty();
+          for (var name in errors) {
+          for (var i in errors[name]) {
+            // object message error django
+            var $input = $("input[name='"+ name +"']");
+            $input.after("<p class ='red-text'>" + errors[name][i].message + "</p>");
+              }
+            }
+         
+          
+        }
+      
+      },
+      // failure:function (request, status, error) {
+      //   alert(errors) ;
+      //   $(".section2").hide(); 
+      //   $(".section1").show();
+      //   console.log(errors)    
+      //     },
+
+    })
+
+  })
+</script> 
+
+
+  
+
+{% endblock %} 
+
+</body>  
+
+</html>

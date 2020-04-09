@@ -1,20 +1,29 @@
 from django.contrib import admin
-from .models import Products,Item, OrderItem,Order, BillingAddress, LNMOnline
-# Register your models here.
+from .models import Item , OrderItem,Order, BillingAddress
 
-admin.site.register(Products)
+# admin.site.register(Products)
 admin.site.register(Item)
-admin.site.register(OrderItem)
-admin.site.register(Order)
+
 admin.site.register(BillingAddress)
 
 
-class LNMOnlineAdmin(admin.ModelAdmin):
-    list_display = ["Amount",
-                    "MpesaReceiptNumber",
-                    "TranscationDate",
-                    "PhoneNumber",
-                    "paid"
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ["user",
+                    "item",
+                    "quantity",
+                    "ordered"
                  ]
 
-admin.site.register(LNMOnline,LNMOnlineAdmin)
+admin.site.register(OrderItem,OrderItemAdmin)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ["user",
+                    "ordered_date",
+                    "ordered",
+                    "seller",
+                    "amount",
+                    "released",
+                    "refund",
+                 ]
+
+admin.site.register(Order,OrderAdmin)

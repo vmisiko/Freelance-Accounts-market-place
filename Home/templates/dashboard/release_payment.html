@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+{% extends "base.html"%}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content%}
+    
+    <div class="container  mt-5 pt-5">
+
+        
+        <h1 class="text-center animated flipInY delay-1s"><i>
+          Release of Payment
+        </i>
+           
+        </h1>
+        {% if order %}
+
+        <div class="alert alert-danger alert-dismissible fade show animated bounceInDown" role="alert">
+          <h3>Important !!</h3>
+          <ul>
+            <li> Dear  <Strong>{{ request.user|title }}</Strong>, You are in full control of your Money. You are required to release payment only if 
+              you are satisfied with the account and  completed transfer of ownership. </li>
+
+            <li>If you do not release the payment to the seller within a period of 3 days with no complain or
+                refund application, the system will automatically Release the payment to the seller's Account.
+            </li>
+
+            <li>If you have any complain or you have trouble with the seller releasing full ownership to you 
+                , Kindly apply for a Refund within 3 days after completion of your order. 
+            </li>
+
+          </ul>
+
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endif %}
+        <div class="row">
+
+       
+                <div class="card col-12">
+
+                    
+                   <!--Table-->
+                      <table class="table table-striped w-auto">
+
+                        <!--Table head-->
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>order ID</th>
+                            <th>Total Amount</th>
+                            <th> Seller</th>
+                            <th>Release</th>
+                          </tr>
+                        </thead>
+                        <!--Table head-->
+
+                        <!--Table body-->
+                        <tbody>
+                      {% if order %}
+                      
+                          <tr class="table-info">
+                            <th scope="row">1</th>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.amount}}</td>
+                            <td> {{ order.seller}}</td>
+
+                            <td> <div class="text-center">
+                              <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">
+                               Release Payment </a>
+                            </div>
+                            </td>
+
+                          </tr>
+
+                        {% else %}
+
+                        <tr>
+                          
+                          <td colspan="5"> You have no previous orders  <td>
+                          
+                          
+                        </tr>
+
+                        {% endif %}
+                          
+                        
+                        </tbody>
+                        <!--Table body-->
+
+
+                      </table>
+                    <!--Table-->
+
+
+                </div>
+
+        </div>
+
+    </div>
+
+          <!--Modal: Login / Register Form-->
+        <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-notify modal-info " role="document">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <h4 class="heading lead">Release payment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body mx-3">
+                <form class="post-form" method="GET">
+                  {% csrf_token %}
+        
+                <div class="row mb-4">
+
+                  <div class="col-1">
+
+                      <input id="checkbox" type="checkbox" id="checkbox" class="form-group" required>
+
+                  </div>
+
+                  <div class="col-11">
+
+                      <label class="ml-2" data-error="wrong" data-success="right" for="checkbox">I hereby confirm the release of payment of Ksh:200, and acceptance of <a class="green-text"> Terms and Conditions</a>  herein Laid.</label>
+                 
+                    </div>
+                
+                </div>
+        
+              </div>
+              <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-default">Login</button>
+
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+    <!--Modal: Login / Register Form-->
+
+
+    <!-- Central Modal Medium Success -->
+<div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-notify modal-success" role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading lead"> Release Success </p>
+
+      <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+      <div class="text-center">
+        <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s"></i>
+        
+        Thank you for working with Freelancing Accounts. If our services were of help, 
+        kindly refer more freelancers to this site. We wish you all the best with your new Account.
+        
+      </div>
+    </div>
+
+    <!--Footer-->
+    <div class="modal-footer justify-content-center">
+     
+      <a type="button" class="btn btn-outline-success waves-effect" onclick="location.reload(true);" data-dismiss="modal">Dismiss</a>
+    </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+<!-- Central Modal Medium Success-->
+
+<hr class="my-5">
+
+    <script>
+
+      $(".post-form").on("submit" ,function(e) {
+        e.preventDefault();
+        $("#modalLoginForm").modal("hide");
+        $('.modal-backdrop').remove();
+        
+        $.ajax({
+          url: "{% url 'dashboard:validate_release' %}" ,         
+          type:"GET" , 
+          async: true,
+          data:{
+            "id": "{{ order.id }}",
+            "amount": "{{ order.amount }}",
+            "checkbox":"true",
+            "seller":"{{ order.seller }}",
+            "csrfmiddlewaretoken":"{{ csrf_token }}",
+          } ,
+          dataType: 'json',
+          success: function (data) {
+
+            
+            if (data.message=="true") {
+              
+              $('#centralModalSuccess').modal('show');
+             
+
+            }
+
+          },   
+          })
+
+      })
+      
+      </script>
+      
+            
+{% endblock %}
+
+</body>
+</html>

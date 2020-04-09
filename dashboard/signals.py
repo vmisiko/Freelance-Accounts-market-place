@@ -1,0 +1,63 @@
+from django.shortcuts import get_object_or_404
+from .models import AccountsModel
+from paypal.standard.models import ST_PP_COMPLETED
+from paypal.standard.ipn.signals import valid_ipn_received
+from django.dispatch import receiver
+from django.db.models import signals
+from MpesaApp.models import LNMOnline
+from .models import AccountsModel
+from allauth.account.signals import user_signed_up
+from .models import AccountsModel
+from Home.models import Order
+# from paypal.standard.ipn.signals import valid_ipn_received
+
+@receiver(user_signed_up)
+def save_Account(sender, **kwargs):
+    request = kwargs['request'] 
+    user = kwargs['user']
+    print(user, request)
+    
+    account = AccountsModel.objects.create(
+        user = user
+    )
+    
+
+
+
+
+
+@receiver(signals.post_save, sender = LNMOnline)
+def send_lnm_signal(sender, instance, **kwargs):
+
+    phone_number = instance.PhoneNumber
+    amount1 = instance.Amount
+
+    if AccountsModel.objects.filter(phone_number= phone_number).exists():
+        account = AccountsModel.objects.get(phone_number= phone_number)
+        
+        user = account.user
+        amount2 = account.amount
+        amount = int(amount1) + int(amount2)
+        account.amount = amount
+        account.save()
+        print("updated Accounts")
+
+        order = Order.objects.get(user__username = user)
+        order.amount = int(amount1)
+        order.save()
+
+    else:
+        print("Account with that phone number does not exist")
+
+
+
+
+
+
+
+
+
+
+
+        
+    

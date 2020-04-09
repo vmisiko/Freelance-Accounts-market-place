@@ -1,0 +1,65 @@
+
+{% extends 'base.html' %}
+
+<!-- transaction History -->
+{% block content%}
+
+        <section class = " mt-5 pt-5 ">
+          <div id= "contact" class="container mt-3 "> 
+            <h1 class="d-flex justify-content-center  animated rotateIn "> <i> Transaction History </i> </h1>
+              <div class="card  ">
+                <div class="card-header">
+                    <h2 class=" blue-text animated bounceInDown"> Your Previous Transactions </h2>
+
+                </div>
+
+                <div class=" card-body table-responsive text-nowrap " style="overflow:auto; height: 500px ">
+
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">User</th>
+                          <th scope="col">Payment Mode</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Status</th>
+                          
+                        </tr>
+                      </thead>
+
+                  
+
+                      <tbody>
+                        
+                    {% for obj in object_list %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ obj.user}}</td>
+                          <td>{{ obj.payment_mode}}</td>
+                          <td>$ {{ obj.amount}}</td>
+                          <td>{{ obj.date }}</td>
+                          {%if obj.status == False %}
+                          <td><span class="badge badge-pill purple " style="font-size: medium;"> pending ... </span></td>
+                          {% else %}
+                          <td><span class="badge badge-pill badge-success " style="font-size: medium;"> paid </span></td>
+                          
+                          {% endif %}
+                        </tr>
+                    {%  empty %}
+                        <tr>
+                          <td colspan="6" class="text-center"> You have no previous Transctions </td>
+                        </tr>
+                      
+                    {% endfor %}
+                      
+                      </tbody>
+                    </table>
+                  
+                </div>
+              </div>
+              <hr class="mb-5">
+          </div>
+        </section >
+
+{% endblock %}

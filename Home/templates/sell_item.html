@@ -1,24 +1,27 @@
+
+                    
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 {% extends "base.html"%}
 {% load  staticfiles %}
+
 {%  load crispy_forms_tags %}
+
+
   <head>
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link href="{%static "css/bootstrap.min.css"%}" rel="stylesheet">
-    <!-- Material Design Bootstrap -->
-    <link href="{%static "css/mdb.min.css"%}" rel="stylesheet">
-    <!-- Your custom styles (optional) -->
-    <link href="{%static "css/style.min.css" %}rel="stylesheet">
+     <!-- Bootstrap core CSS -->
+     <link href="{% static 'css/bootstrap.min.css'%} " rel="stylesheet">
+     <!-- Material Design Bootstrap -->
+     <link href="{% static 'css/mdb.min.css'%}" rel="stylesheet">
+     <!-- Your custom styles (optional) -->
+     <link href="{% static 'css/style.min.css' %} " rel="stylesheet">
+ 
 
-    <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script  src="{% static "js/bootstrap.bundle.js" %}"></script>
-    <script  src="{% static "js/bootstrap.bundle.min.js" %}"></script>
-    <script  src="{% static "js/bootstrap.min.js" %}"></script>
-
+   
   </head>
   <body>
         {% block content %}
@@ -26,39 +29,126 @@
         <main class="mt-5 pt-4">
             <div class="container dark-grey-text mt-5">
         
-              <!--Grid row-->
+              <!-- Grid row -->
               <div class="container wow fadeIn">
 
-                    <h2 class=" h2 text-center">Sell Account</h2>
+                  
 
                     <div class="row">
+                        <!-- <div class="col-lg-2 col-md-0">
 
-                            <!--Grid column-->
-                        <div class="col-md-8 mb-4">
+                        </div> -->
+                            <!-- Grid  form column -->
+                        <div class=" col-lg-8 col-md-12 mb-4 m-auto">
 
                             <div class="card my-5">
 
-                            <h4 class="card-title text-center pt-4"><strong> Fill in the following then submit </strong></h4>
+                            <h1 class="card-title text-center pt-4"><strong>Account Sell Form</strong></h1>
+
+                            <p class="text-center">Please fill out this form with the True Details of the account you are selling.
+                               Ensure you give out Truthful Information.</p>
+
+
+                             <div class="alert alert-danger alert-dismissible mx-2">
+                                Ensure you enter your Price in US Dollars($).
+
+                                <button type="button " class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true" class="white-text">&times;</span>
+                                </button>
+                              
+                             </div>
+
                 
-                            <div class=" card-body text-center">
-                                <!--Card content-->
-                                <!-- Text -->
-                            
+                            <div class=" card-body">
+                               
                             <form method= "POST" class="card-body" enctype="multipart/form-data" >
                                     {% csrf_token %}
+
+                                    <div class="form-group ">
+                                      {{ form.title | as_crispy_field }}
+                                    </div>
+
+                                <div class="row ">
+                                  <div class="form-group col-lg-6 col-md-12">
+
+                                    {{  form.price | as_crispy_field }} 
+
+                                  </div>
+                                  <div class="form-group col-lg-6 col-md-12">
+                                    {{ form.discountprice | as_crispy_field }}
+                                  </div>
+                                </div>
                                 
-                                     {{form|crispy }}
-                          
-                                  <input type="submit"  class = '' value="Submit" />
+                                <div class="row ">
+                                  <div class="form-group col-lg-4 col-md-12">
+                                    {{ form.category | as_crispy_field }}
+                                  </div>
+                                  <div class="form-group col-lg-4 col-md-12">
+                                    {{ form.label | as_crispy_field }}
+                                  </div>
+                                  <div class="form-group col-lg-4 col-md-12">
+                                    {{ form.Level | as_crispy_field }}
+                                  </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="form-group col-lg-4 col-md-12">
+                                      {{ form.finished_orders | as_crispy_field }}
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-12">
+                                      {{ form.rating | as_crispy_field }}
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-12">
+                                      {{ form.Reviews | as_crispy_field }}
+                                    </div>
+                                    
+
+                                </div>
+
+                                <div class="row">
+                                  
+                                  <div class="custom-file col-lg-6 col-md-12">
+
+                                  
+                                    {{ form.diplay_pic|as_crispy_field}}
+  
+                                  </div>
+                                  <div class="form-group col-lg-6 col-md-12">
+  
+                                    {{ form.contact | as_crispy_field }}
+  
+                                  </div>
+
+
+                                </div>
+
+                                <div class="form-group ">
+                                  {{ form.profile | as_crispy_field }}
+                                </div>
+
+                                <div class="form-group ">
+
+                                  {{ form.description | as_crispy_field }}
+
+                                </div>
+
+                               
+                                
+                                  <input type="submit"  class = 'btn btn-primary' value="Submit" />
                               </form>
                                 
                             </div>
                             </div>
                         </div>
+                         <!-- Grid  form column -->
+
+                        
                     </div>
               </div>
          </div>
         </main>
+
         {% endblock%}
 
 

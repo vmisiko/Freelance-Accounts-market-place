@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 {% load cart_template_tags %}
+<!-- {% load  staticfiles %} -->
+{% load static%}
+
+{% load login_tag %}
+{% load i18n %}
   <head>
     <meta charset="utf-8">
-    {% load  staticfiles %}
-    <link rel = 'stylesheet' href = "{% static "css/bootstrap.min.css" %}" type ='text/CSS' >
+   
+    <link rel = 'stylesheet' href = "{% static 'css/bootstrap.min.css' %}" type ='text/CSS' >
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -26,7 +31,7 @@
       body,
       header,
       .carousel {
-        height: 60vh;
+        height:400px;
       }
 
       
@@ -60,19 +65,75 @@
     </style>
 
 
-    <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.min.js' %}"></script>
+   
     
 </head>
 
-{% include 'nav.html' %}
+
 
 <body>
-    
-{% block body %}
 
+  <!-- logout form  -->
+
+
+  <div class="modal fade" id="logout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Sign Out </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        
+        <h1>{% trans "Sign Out" %}</h1>
+
+        <p>{% trans 'Are you sure you want to sign out?' %}</p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          {% endif %}
+          <button type="submit"  class = "btn btn-primary">{% trans 'Sign Out' %}</button>
+        </form>
+        <hr class = "pb-3">
+
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- logout  -->
+
+<!-- modal snipet -->
+  <div class="modal fade" id="sign_in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Sign In</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        
+        {% login_form_tag request.get_full_path %}
+        
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+  <!-- modal snippet  -->
+
+  {% include 'nav.html' %}
+    
 
 {% if messages %}
     {% for message in messages %}
@@ -87,13 +148,27 @@
 
     {% block content %}
 
-    {% endblock%}
-
-    {% block extra_body %}
     {% endblock %}
+
+  
 
 {% include "footer.html" %}
 
+
+
+
+
+<script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script  src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+{% block scripts %}
+<script type="text/javascript">
+  // Animations initialization
+  new WOW().init();
+</script>
 {% endblock %}
 
 </body>

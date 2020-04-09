@@ -131,11 +131,11 @@
 
               {% if object.discountprice %}
               <span class="mr-1">
-                <del>ksh: {{ object.price }}/=</del>
+                <del>$ {{ object.price }}/=</del>
               </span>
-              <span>Ksh: {{ object.get_discount_price }} /=</span>
+              <span>$ {{ object.get_discount_price }} /=</span>
               {% else %}
-              <span>Ksh:{{ object.price }} /=</span>
+              <span>$ {{ object.price }} /=</span>
 
               {% endif %}
             </p>
@@ -192,7 +192,7 @@
         <!--Grid column-->
         <div class="col-md-6 text-center">
 
-          <h4 class="my-4 h4">More Accounts to Check </h4>
+          <h4 class="my-4 h4">Related Accounts to Check </h4>
 
           <p>Like what you see? If no,t don't give up. We still have more in store perfectly tailored for you.
             click any of the below products to be directed back to more accounts to select from.
@@ -207,30 +207,165 @@
       <!--Grid row-->
       <div class="row wow fadeIn">
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-12 mb-4">
+      {% if r_items.exist %}
+        {% for rtem in r_item %}
+        <div class=" col-lg-4 mb-4">
 
-          <a href = "{% url 'Home:home' %}" > <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt=""></a>
+          <!--Card-->
+          <div class="card card-cascade ">
+            
+            <!--Card image-->
+            <div class="view  text-white view-cascade gradient-card-header blue-gradient">
+
+                <!-- Title -->
+                <a href="{{ rtem.get_absolute_url }}"  class = "pink-hover lighten-2-hover">
+                  <h2 class="card-header-title text-white mb-3 mt-2"><strong>{{ rtem.title }}</strong></h2>
+                </a>
+                <!-- rating -->
+
+                    <span id="rateMe2"  class="empty-stars"></span>
+                  
+                  
+                  <!-- rating.js file -->
+                  <script src="{% static 'js/addons/rating.min.js'%}"></script>
+            
+              </div>
+            
+
+            <!--Card content-->
+            <div class="card-body text-center">
+              <!--Category & Title-->
+              <a href="" class="grey-text">
+
+                
+                <h5 class="card-header-subtitle mb-0"> {{ rtem.get_category_display }}</h5>
+                <span class="badge badge-pill  {{ rtem.get_label_display }}-color">{{rtem.Level}}</span>
+                
+              </a>
+              <p> Rating :{{ rtem.rating}}% </p>
+              <!-- row  for orders and reviews -->
+              <h4 class="font-weight-bold blue-text">
+                  <strong>  Ksh:
+                    {% if rtem.discountprice %}
+                      {{ rtem.get_discount_price }}
+                    {% else %}
+                      {{ rtem.price}}
+                    {% endif %}
+
+                /= </strong>
+                </h4> 
+              <div class = "row  wOW fadeIn">
+                <div class = "col-6 col-lg-6 col-md-6 text-center mr-auto ml-auto ">
+                  <h5 class = "green-text"> {{rtem.finished_orders}}</h5>
+                  <p> finished orders<p>
+                </div>
+                
+                    <div class = "col-6 col-md-6 text-center ">
+                    <h5 class = "green-text"> {{rtem.Reviews }}</h5>
+                      <h6> Reviews</h6>
+                    </div>
+              </div>
+
+              <a href="{{ rtem.get_absolute_url }}" class="btn btn-primary"> Buy Account </a>
+              
+                  
+                
+              </strong>
+
+            </h5>
+              <div>
+              
+            </div>
+
+            </div>
+            <!--Card content-->
+
+          </div>
+          <!--Card-->
 
         </div>
-        <!--Grid column-->
+        {% endfor %}
+      {% else %}
+        {% for nrtem in nr_item %}
+        <div class=" col-lg-4 mb-4">
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
+          <!--Card-->
+          <div class="card card-cascade ">
+            
+            <!--Card image-->
+            <div class="view  text-white view-cascade gradient-card-header blue-gradient">
 
-          <a href = "{% url 'Home:home' %}"><img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt=""></a>
+                <!-- Title -->
+                <a href="{{ nrtem.get_absolute_url }}"  class = "pink-hover lighten-2-hover">
+                  <h2 class="card-header-title text-white mb-3 mt-2"><strong>{{ nrtem.title }}</strong></h2>
+                </a>
+                <!-- rating -->
 
-        </div>
-        <!--Grid column-->
+                    <span id="rateMe2"  class="empty-stars"></span>
+                  
+                  
+                  <!-- rating.js file -->
+                  <script src="{% static 'js/addons/rating.min.js'%}"></script>
+            
+              </div>
+            
 
-        <!--Grid column-->
-        <div class="col-lg-4 col-md-6 mb-4">
+            <!--Card content-->
+            <div class="card-body text-center">
+              <!--Category & Title-->
+              <a href="" class="grey-text">
 
-          <a href = "{% url 'Home:home' %}"><img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt=""></a>
+                
+                <h5 class="card-header-subtitle mb-0"> {{ nrtem.get_category_display }}</h5>
+                <span class="badge badge-pill  {{ nrtem.get_label_display }}-color">{{ nrtem.Level}}</span>
+                
+              </a>
+              <p> Rating :{{ nrtem.rating}}% </p>
+              <!-- row  for orders and reviews -->
+              <h4 class="font-weight-bold blue-text">
+                  <strong>  Ksh:
+                    {% if nrtem.discountprice %}
+                      {{ nrtem.get_discount_price }}
+                    {% else %}
+                      {{ nrtem.price}}
+                    {% endif %}
 
-        </div>
-        <!--Grid column-->
+                /= </strong>
+                </h4> 
+              <div class = "row  wOW fadeIn">
+                <div class = "col-6 col-lg-6 col-md-6 text-center mr-auto ml-auto ">
+                  <h5 class = "green-text"> {{ nrtem.finished_orders}}</h5>
+                  <p> finished orders<p>
+                </div>
+                
+                    <div class = "col-6 col-md-6 text-center ">
+                    <h5 class = "green-text"> {{ nrtem.Reviews }}</h5>
+                      <h6> Reviews</h6>
+                    </div>
+              </div>
 
+              <a href="{{ nrtem.get_absolute_url }}" class="btn btn-primary"> Buy Account </a>
+              
+                  
+                
+              </strong>
+
+            </h5>
+              <div>
+              
+            </div>
+
+            </div>
+            <!--Card content-->
+
+          </div>
+          <!--Card-->
+
+        </div> 
+        {% endfor %}
+
+      {% endif %}
+        
       </div>
       <!--Grid row-->
 
@@ -246,7 +381,9 @@
 
   <!-- SCRIPTS -->
   <!-- JQuery -->
-  <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  {% endblock %}
+
+  {% block scripts %}
   <script>
       function myFunction() {
         var copyText = document.getElementById("teks");
@@ -255,17 +392,11 @@
         document.execCommand("copy");
         alert("Copied the link: " + copyText.value);
       }
-      </script>
+ </script>
 
-  <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
-  <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-  <script  src="{% static 'js/bootstrap.min.js' %}"></script>
-  <!-- Initializations -->
-  <script type="text/javascript">
-    // Animations initialization
-    new WOW().init();
+ 
 
-  </script>
+  
   {% endblock %}
 </body>
 

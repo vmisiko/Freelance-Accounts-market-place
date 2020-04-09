@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+{% extends 'base.html'%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+{% block content%}
+
+<Main class="container mt-5">
+
+    <h1 class="mt-5 pt-5 text-center "> <i> Request Refund </i></h1>
+
+  <ul class="nav nav-tabs md-tabs " id="myTabMD" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+        aria-selected="true">Request Refund</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+        aria-selected="false">  Refund History </a>
+    </li>
+    
+  </ul>
+  <div class="tab-content " id="myTabContentMD">
+    <div class="tab-pane fade show active" id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
+      <div class="card">
+        <h3 class="card-header"> Select which order you want to refund</h3>
+        <div class="table-responsive  text-nowrap">
+            
+ 
+            <!--Table-->
+            <table class="table table-hover ">
+    
+              <!--Table head-->
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Orderid</th>
+                  <th>Date</th>
+                  <th>amount</th>
+                  <th>Seller</th>
+                  <th>Refund</th>
+                  
+                </tr>
+              </thead>
+              <!--Table head-->
+    
+              <!--Table body-->
+              <tbody>
+
+               {% for object in object_list%} 
+                <tr style="height:min-content">
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td>{{ object.id }}</td>
+                  <td>{{ object.ordered_date }}</td>
+                  <td>{{ object.amount }}</td>
+                  <td>{{ object.seller }}</td>
+                  <td>
+                    <button id="btn"  class="btn btn-primary" onclick="refund(this);" data-toggle="modal" data-target="#modalRegisterForm">Refund Money</button>
+                    
+                    <button id="loadbtn" style="display: none; height:min-content" class="btn btn-primary" type="button" disabled>
+                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      Loading...
+                    </button>
+                  
+                  </td>
+                  
+                </tr>
+
+                {% empty %}
+                <tr>
+                  <th scope="row"></th>
+                  <td colspan="5"> You have no previous orders to refund you Money </td>
+                  
+                </tr>
+                {% endfor %}
+ 
+              </tbody>
+              <!--Table body-->
+    
+    
+            </table>
+            <!--Table-->
+          </div>
+
+    </div>
+    </div>
+
+    <div class="tab-pane fade" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+      <div class="card" style="overflow-y:scroll; height:400px;"> 
+        <h4 class="card-header"> Refund History</h4>
+        <div class="table-responsive  text-nowrap">
+            
+    
+            <!--Table-->
+            <table class="table table-hover ">
+    
+              <!--Table head-->
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Orderid</th>
+                  <th>Date</th>
+                  <th>amount</th>
+                  <th> Status</th>
+                  
+                  
+                  
+                </tr>
+              </thead>
+              <!--Table head-->
+    
+              <!--Table body-->
+              <tbody>
+    
+               {% for object in refund %} 
+                <tr>
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td>{{ object.orderid }}</td>
+                  <td>{{object.date}}</td>
+                  <td>{{ object.amount }}</td>
+                  <td>
+    
+                    {% if object.status %}
+    
+                    <span class="badge success badge-pill"> Paid </span>
+    
+                    {% else %}
+    
+                    <span class="badge purple badge-pill" style="font-size: medium;"> pending... </span>
+    
+                    {% endif %}
+    
+    
+    
+                  </td>
+                              
+                </tr>
+    
+                {% empty %}
+                <tr>
+                  <th scope="row"> </th>
+                  <td colspan="4"> You have no previous orders to refund you Money </td>
+                  
+                </tr>
+                {% endfor %}
+    
+              </tbody>
+              <!--Table body-->
+    
+    
+            </table>
+            <!--Table-->
+          </div>
+    
+    </div>
+    </div>
+    
+  </div>
+</Main>
+
+
+
+<hr class="mt-5">
+
+   
+
+    <!-- Central Modal Medium Success -->
+<div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-notify modal-success" role="document">
+  <!--Content-->
+  <div class="modal-content">
+    <!--Header-->
+    <div class="modal-header">
+      <p class="heading lead"> Request Success </p>
+
+      <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+        <span aria-hidden="true" class="white-text">&times;</span>
+      </button>
+    </div>
+
+    <!--Body-->
+    <div class="modal-body">
+      <div class="text-center">
+        <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s"></i>
+        
+        Request is sucessful and pending Release. We will look forward to working with you again.
+       Your money will be refunded to you in less than 24 hours.
+        
+      </div>
+    </div>
+
+    <!--Footer-->
+    <div class="modal-footer justify-content-center">
+     
+      <a type="button" class="btn btn-outline-success waves-effect" onclick="location.reload(true);" data-dismiss="modal">Dismiss</a>
+    </div>
+  </div>
+  <!--/.Content-->
+</div>
+</div>
+<!-- Central Modal Medium Success-->
+
+      
+ <!-- reason popup  -->
+ <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog" role="document">
+   <div class="modal-content">
+     <div class="modal-header text-center">
+       <h4 class="modal-title w-100 font-weight-bold">Request Reason</h4>
+       <button type="button" class="close" data-dismiss="modal" onclick="loadstop();" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+     <div class="modal-body mx-3">
+       <form method="GET" class="postreason">
+       
+       <label>Select Reason</label>
+       <select id="select" class="browser-default custom-select mb-4" onchange="yesnoCheck(this);" required>
+           <option value="" selected> Choose option </option>
+           <option value="The seller did not give logins" >The seller did not give logins </option>
+           <option value="The Account is not Genuine"> The Account is not Genuine </option>
+           <option value="The Seller refused to give certificate ">The Seller refused to give certificate  </option>
+           <option value="Other"> Other</option>
+       </select>
+
+   
+       <!-- Message -->
+       <div style="display: none;" id="other" class="form-group">
+           <textarea class="form-control rounded-0" id="other-reason" rows="3" placeholder="Kindly Specify"></textarea>
+       </div>
+
+       
+       <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" id="id_mpesa" name="mode" value="mpesa">
+        <label class="custom-control-label" for="id_mpesa">Mpesa</label>
+      </div>
+      
+      
+      <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" id="id_paypal" name="mode"  value="paypal">
+        <label class="custom-control-label" for="id_paypal">Paypal</label>
+      </div>
+
+     </div>
+     <div class="modal-footer d-flex justify-content-center">
+       <button type="submit" class="btn btn-primary"> Submit </button>
+     </div>
+
+    </form> 
+   </div>
+ </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+ <!-- reason popup  -->
+<script>
+  function yesnoCheck(that) {
+    if (that.value == "Other") {
+      $("#other").show();
+    }
+  
+  }
+  function loadstop() {
+    $("#btn").show()
+    $("#loadbtn").hide()
+  }
+
+ $(".postreason").on("submit", function(e){
+   e.preventDefault();
+   $("#modalRegisterForm").modal("hide")
+   $(".modal-backdrop").remove()
+   
+
+   var select = $("#select").val();
+   var other = $("#other-reason").val();
+   var mode =  $("[name='mode']:checked").val()
+   var data = Window.data;
+  data["select"] = select
+  data["other"] = other
+  data["mode"]= mode
+  console.log(data)
+  $.ajax({
+      url:"{% url 'dashboard:valid_refund' %}",
+      type:"GET",
+      async:true,
+      dataType:"json",
+      data : data,
+      success: function(data) {
+
+        if (data.message =="successful"){
+
+        $("#centralModalSuccess").modal("show");
+        $("#btn").show()
+        $("#loadbtn").hide()
+
+        }
+        else {
+          alert(data.message);
+        }
+
+ 
+      },
+
+
+
+    })
+
+ })
+
+
+  function refund(ctl) {
+    var row = $(ctl).parents("tr")
+    $("#btn").hide()
+    $("#loadbtn").show()
+
+
+    var cols = row.children("td");
+  
+    Window.data ={
+      "orderid" : $(cols[0]).text(),
+      "date" : $(cols[1]).text(),
+      "amount": $(cols[2]).text(),
+      "seller":$(cols[3]).text(),
+
+    }
+    
+  
+    
+    
+  // console.log(Window.data)
+  }
+</script>
+{% endblock %}
+
+</body>
+</html>

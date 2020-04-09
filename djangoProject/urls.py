@@ -16,12 +16,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+import notifications.urls
 
 urlpatterns = [
+    
     path('paypal/', include('paypal.standard.ipn.urls')),
     path('', include('Home.urls' , namespace = "Home")),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path("mobile/", include("MpesaApp.urls")),
+    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
+
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

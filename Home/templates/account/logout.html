@@ -6,10 +6,10 @@
 
 {% block content %}
 <main>
-  <div id="carousel-example-1z" class="container">
+  <div id="carousel-example-1z" class="container pt-5">
 
     <!--Section: Products v.3-->
-    <section class=" mb-4 mt-4">
+    <section class=" mb-4 mt-4 pt-5">
 
       <!--Grid row-->
       <div class="row wow fadeIn">
@@ -26,6 +26,8 @@
           {% endif %}
           <button type="submit"  class = "btn btn-primary">{% trans 'Sign Out' %}</button>
         </form>
+        <hr class = "pb-3">
+
       </div>
     </div>
   </section>
@@ -35,3 +37,5 @@
 
 
 {% endblock %}
+{% block scripts%}
+    {% endblock %}

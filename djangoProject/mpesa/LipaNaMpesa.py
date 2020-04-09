@@ -13,19 +13,20 @@ from djangoProject.mpesa.utils import formatted_time
 
 
 
-def lipa_na_mpesa(phone_number, amount , AccountReference):
+def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     phone = phone_number
     account = AccountReference  
+    callbackurl = callbackurl
     formated_time = formatted_time()
 
-    print(formated_time, " this is formatted time")
+    # print(formated_time, " this is formatted time")
 
     decoded_password = generate_password(formated_time) 
-    print(decoded_password, " this is decoded password")
+    # print(decoded_password, " this is decoded password")
     
 
     my_access_token = generate_access_token()
-    print(my_access_token, " this is my access token")
+    # print(my_access_token, " this is my access token")
 
     
     access_token = my_access_token
@@ -42,7 +43,7 @@ def lipa_na_mpesa(phone_number, amount , AccountReference):
         "PartyA": phone,
         "PartyB": keys.bussiness_shortcode,
         "PhoneNumber": phone,
-        "CallBackURL": "https://b6734fc4.ngrok.io/lnm/",
+        "CallBackURL": callbackurl,
         "AccountReference": account,
         "TransactionDesc": "pay for fees",
 
@@ -50,7 +51,7 @@ def lipa_na_mpesa(phone_number, amount , AccountReference):
       
     response = requests.post(api_url, json = request, headers=headers)
       
-    # print (response.text)
+    print (response.text)
 
     return response.json
 

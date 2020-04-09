@@ -24,42 +24,45 @@
 
   <!--Main layout-->
   <main >
-    <div class="container wow fadeIn">
+    <div class="container wow fadeIn mt-5 ">
 
       <!-- Heading -->
-      <h2 class="my-5 h2 text-center">Checkout form</h2>
+      <h2 class="my-5 pt-5 h2 text-center animated flipInY ">Checkout form</h2>
 
-      <!--Grid row-->
+
+      <!-- <Grid row -->
       <div class="row">
+
 
         <!--Grid column-->
         <div class="col-md-8 mb-4">
 
+          
           <!--Card-->
           <div class="card">
 
             
-
             <!--Card content-->
-            <form method= "POST" class="card-body">
+          
+            <form method= "POST" class="card-body ">
 
               {% csrf_token %}
 
               <!--address-->
-              <div class="  md-form mb-5">
+              <div class="  form-group">
                 <!-- <input type="text" id="address" class="form-control" placeholder=" "> -->
-
+                <label for="{{form.street_address.id_for_label}}" class=""> Street Address </label>
                 {{ form.street_address }}
-                <label for="address" class=""> Street Address* </label>
+                
               </div>
 
               <!--address-2-->
-              <div class=" md-form mb-5">
+              <div class="form-group">
                 <!-- <input type="text" id="address-2" class="form-control" placeholder="Apartment or suite"> -->
 
-
+                <label for="{{form.apartment_address.id_for_label}}" class=""> Apartment Address(Optional) </label>
                 {{ form.apartment_address }}
-                <label for="address-2" class=""> Apartment Address(Optional) </label>
+                
               </div>
 
               <!--Grid row-->
@@ -68,12 +71,10 @@
                 <!--Grid column-->
                 <div class="col-lg-4 col-md-12 mb-4">
 
-                  <label for="country">Country</label>
-                  <!-- <select class="custom-select d-block w-100" id="country" required>
-                    <option value="">Choose...</option>
-                    <option>United States</option>
-                  </select> -->
+                  <label for="{{form.country.id_for_label}}">Country</label>
+                  
                   {{ form.country }}
+                  
                   <div class="invalid-feedback">
                     Please select a valid country.
                   </div>
@@ -81,45 +82,52 @@
                 </div>
                 <!--Grid column-->
                 <div class="col-lg-4 col-md-6 mb-4">
-                <label for="address-2" class=""> Zip* </label>
+                <label for="{{form.zip_code.id_for_label}}" class=""> Zip* </label>
 
-                    {{ form.zip }}
+                    {{ form.zip_code }}
 
                 </div>
 
+                <div class="col-lg-4 col-md-6 mb-4">
+                  <label for="{{form.zip_code.id_for_label}}" class=""> phone_number* </label>
+  
+                      {{ form.phone_number}}
+  
+                  </div>
+  
 
               </div>
               <!--Grid row-->
 
               <hr>
 
-              <div class="custom-control custom-checkbox">
-                <input {% if form.same_billing_address.value %} checked {% endif %} type="checkbox" class="custom-control-input" id="same-address" name ="same_billing_address">
-                {{ form.same_billing_address }}
-                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input {% if form.save_info.value %} checked {% endif %} type="checkbox" class="custom-control-input" id="save-info" name= "save_info" >
-                {{ form.save_info }}
-                <label class="custom-control-label" for="save-info">Save this information for next time</label>
-              </div>
+              <!-- <div class="custom-control custom-checkbox form-group">
+                <input {% if form.same_billing_address %} checked {% endif %} type="checkbox" class="custom-control-input" id="id_same_billing_adress" name ="same_billing_address" value=True>
+                 {{ form.same_billing_address }} 
+                 <label class="custom-control-label" for="Id_same_billing_adress">Shipping address is the same as my billing address</label> -->
+              <!-- </div> -->
+              <!-- <div class="custom-control custom-checkbox"> -->
+                <!-- <input {% if form.save_info %} checked {% endif %} type="checkbox" class="custom-control-input" id="Id_save_info" name= "save_info" value=True> -->
+                <!-- {{ form.save_info }} -->
+                <!-- <label class="custom-control-label" for="id_save_info">Save this information for next time</label> -->
+              <!-- </div> -->
 
               <hr>
 
-              <div class="d-block my-3">
+               <div class="">
 
                 {{ form.payment_option }}
                 <!-- {% for key, value in  form.fields.payment_option.choices %}
                 <div class="custom-control custom-radio">
-                  <input id="{{ key }}" name="paymentMethod" type="radio" class="custom-control-input" required >
+                  <input id="{{ key }}" name="paymentMethod" type="radio" class="" required >
                   <label class="custom-control-label" for = " {{ key }} " > {{ value }} </label>
                 </div>
-                  {% endfor %} -->
+                  {% endfor %}  -->
 
               </div>
 
               <hr class="mb-4">
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+              <button class="btn btn-primary btn-lg btn-block" type="submit"> Continue to checkout </button>
 
             </form>
 
@@ -135,7 +143,7 @@
             <!-- Heading -->
             <h4 class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-muted">Your cart</span>
-              <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+              <span class="badge badge-secondary badge-pill"> {{ order.items.count }} </span>
             </h4>
   
             <!-- Cart -->
@@ -146,7 +154,7 @@
                   <h6 class="my-0">{{ order_item.item.title }}</h6>
                   <small class="text-muted">{{ order_item.item.description }} </small>
                 </div>
-                <span class="text-muted">Ksh: {{ order_item.get_final_price }} </span>
+                <span class="text-muted">$ {{ order_item.get_final_price }} </span>
               </li>
               {% endfor %}
               <li class="list-group-item d-flex justify-content-between bg-light">
@@ -154,7 +162,7 @@
                   <h6 class="my-0">Promo code</h6>
                   <small>EXAMPLECODE</small>
                 </div>
-                <span class="text-success">-$5</span>
+                <span class="text-success">-$0</span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <span>Total (USD)</span>
@@ -186,18 +194,7 @@
 {% endblock %}
   <!-- SCRIPTS -->
   <!-- JQuery -->
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="js/popper.min.js"></script>
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="js/mdb.min.js"></script>
-  <!-- Initializations -->
-  <script type="text/javascript">
-    // Animations initialization
-    new WOW().init();
-  </script>
+ 
 </body>
 
 </html>

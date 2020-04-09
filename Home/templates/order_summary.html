@@ -43,13 +43,27 @@
 
                   <th scope="row">{{ forloop.counter }}</th>
                   <td>{{ order_item.item.title }}</td>
-                  <td>{{ order_item.item.price }}</td>
+                  <td>
+                    $
+                    {% if order_item.item.discountprice  %}
+                    
+                        {{ order_item.after_discount_price }}
+
+                      {% else %}
+
+                        {{ order_item.item.price }}
+
+                    {% endif %}
+
+                  
+                  </td>
                   <td><a href = "{% url 'Home:remove_item_from_cart' pk=order_item.item.pk %}" >
                     <i class="fas fa-minus mr-2"></i></a>
                         {{ order_item.quantity }}
                      <a href = "{% url 'Home:add_to_cart' pk=order_item.item.pk %}" ><i class="fas fa-plus ml-2"></i></a></td>
 
                   <td>
+                    $
                     {% if order_item.item.discountprice %}
 
                       {{ order_item.get_total_discount_item_price }}
@@ -83,7 +97,7 @@
                 {% if object.get_total %}
                 <tr>
                   <td colspan = "4"><b> Order Total </b> </td>
-                  <td><b>Ksh: {{ object.get_total }} /=</b></td>
+                  <td><b>$ {{ object.get_total }} /=</b></td>
                 </tr>
 
                 <tr>

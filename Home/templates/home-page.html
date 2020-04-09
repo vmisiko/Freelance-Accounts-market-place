@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 {% extends "base.html"%}
 {% load  staticfiles %}
+{% load login_tag %}
+{% load notifications_tags %} 
+<!-- {% load cart_template_tags %} -->
+
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,20 +16,25 @@
 
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
   <!-- Bootstrap core CSS -->
-  <!-- <link href="{%static 'css/bootstrap.min.css'%} " rel="stylesheet"> -->
+  <link href="{%static 'css/bootstrap.min.css'%} " rel="stylesheet">
   <!-- Material Design Bootstrap -->
-  <!-- <link href="{%static 'css/mdb.min.css'%}" rel="stylesheet"> -->
+  <link href="{%static 'css/mdb.min.css'%}" rel="stylesheet">
   <!-- Your custom styles (optional) -->
-  <!-- <link href="{%static 'css/style.min.css' %} " rel="stylesheet"> -->
+  <link href="{%static 'css/style.min.css' %} " rel="stylesheet">
   <!-- Font Awesome -->
-  
+  <style>
+    .list-group-item :hover {
+      background: rgb(1,1,1,0.1);
+      color:#f57f20;
+
+    }
+  </style>
 
 <body>
 {% block content %}
 
   <!--Carousel Wrapper-->
   
-
   <div id="carousel-example-1z" class="carousel slide carousel-fade">
 
     <!--Indicators-->
@@ -56,6 +67,7 @@
                  <span class = "badge badge-pill primary-color "> Esrow For Freelancers <sup>EF</sup></span>
                 </strong>
               </h1>
+             
 
               <p>
                 <h3><strong>
@@ -65,19 +77,34 @@
               </p>
 
               <h3 class="hidden-xs">
-                  ... confirm Release of Payment only when Satisfird with the Account.
+                  ... confirm Release of Payment only when Satisfied with the Account.
                   </h3>
+                  <div class = " container mx-5 row  wow fadeIn" >
+                  
+                  <div>
+                    <a href="#carousel-example-1z "  class="btn btn-outline-white btn-rounded waves-effect text-center"> Buy Account
+                      <i class="fas fa-graduation-cap ml-2"></i>
+                    </a>
+                  </div>
 
-              <a href="#carousel-example-1z "  class="btn btn-outline-white btn-rounded waves-effect "> Buy Account
-                <i class="fas fa-graduation-cap ml-2"></i>
-              </a>
-           
+                  <div>
+                    <button href=""  class="js-sell-account btn btn-outline-white btn-rounded waves-effect  text-center " > Sell Account
+                      <i class="fas fa-graduation-cap ml-2"></i>
+                    </button>
+                  </div>
+
+
+                  </div>
+              
             </div>
             
+
+
           </div>
         </div>      
       </div>
       <!--/First slide-->
+
 
       <!--Second slide-->
       <div class="carousel-item">
@@ -153,7 +180,7 @@
                   ... confirm Release of Payment only when Satisfird with the Account.
                   </h3>
 
-              <a href="#carousel-example-1z "  class="btn btn-outline-white btn-rounded waves-effect "> Buy Account
+              <a href=""  class="btn btn-outline-white btn-rounded waves-effect "> Buy Account
                 <i class="fas fa-graduation-cap ml-2"></i>
               </a>
            
@@ -184,15 +211,44 @@
 
   </div>
 </div>
- <!--./Carousel Wrapper-->
 
-  <!--Main layout-->
+  <!--Carousel Wrapper-->
+
+    <!--Main layout-->
   <main>
     <div id="carousel-example-1z" class="container">
+      <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
 
       <!--Navbar-->
-      <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+      <!-- <ul class="nav navbar-nav">
+        <li class="dropdown">
+        
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+             Notifs {% live_notify_badge %} 
+             
+             <span class="glyphicon glyphicon-user pull-right"></span>
+            </a>
+         <ul class="dropdown-menu">
+             </ul> 
+            </li>
+      </ul> -->
+      <!-- {% live_notify_list %} -->
 
+      
+      
+    
+
+      <form id="myform" method="GET" action="{% url 'Home:home' %}">
+        {% csrf_token %}
+        <input type="hidden" name="kall" value="kall" />
+        <input type="hidden" name="verb" value="verb" />
+        <input type="hidden" name="bid" value="bid" />
+        <input type="hidden" name="take" value="take" />
+      
+        <!-- <a href="#" onclick="document.forms[0].submit();return false;">Let's go!</a> -->
+   
+      <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
+        
         <!-- Navbar brand -->
         <span class="navbar-brand">Categories:</span>
 
@@ -208,18 +264,18 @@
           <!-- Links -->
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">All
+              <a class="nav-link" href="#" onclick="document.forms[0].submit();return false;">All
                 <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Shirts</a>
+              <a class="nav-link" href="#" onclick="document.forms[1].submit();return false;">Transcribing Account</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Sport wears</a>
+              <a class="nav-link" href="#" onclick="document.forms[2].submit();return false;"> Bidding Account </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Outwears</a>
+              <a class="nav-link" href="#" onclick="document.forms[3].submit();return false;"> Take Account </a>
             </li>
 
           </ul>
@@ -234,6 +290,7 @@
         <!-- Collapsible content -->
 
       </nav>
+    </form>
       <!--/.Navbar-->
 
       <!--Section: Products v.3-->
@@ -243,7 +300,7 @@
         <div class="row wow fadeIn ">
           {% for item  in object_list %}
           <!--Grid column-->
-          <div class=" px-2  mb-4">
+          <div class=" col-lg-4 mb-4">
 
             <!--Card-->
             <div class="card card-cascade ">
@@ -261,7 +318,7 @@
                     
                     
                     <!-- rating.js file -->
-                    <script src="js/addons/rating.js"></script>
+                    <script src="{% static 'js/addons/rating.min.js'%}"></script>
               
                 </div>
               
@@ -279,7 +336,7 @@
                 <p> Rating :{{ item.rating}}% </p>
                 <!-- row  for orders and reviews -->
                 <h4 class="font-weight-bold blue-text">
-                    <strong>  Ksh:
+                    <strong>  $
                       {% if item.discountprice %}
                         {{ item.get_discount_price }}
                       {% else %}
@@ -359,23 +416,64 @@
             </a>
           </li>
 
-          <li class="page-item active">
-            <a class="page-link" href="#">1
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">2</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">3</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">4</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="#">5</a>
-          </li>
+          {% if is_paginated %}
+          
+                {% if page_obj.has_previous %}
+                  <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                {% else %}
+                  <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                {% for i in paginator.page_range %}
+                  {% if page_obj.number == i %}
+                  <li class="page-item active">
+                    <a class="page-link" href="#">{{ i }}
+                      <span class="sr-only">(current)</span>
+                    </a>
+                  </li>
+                    
+                  {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                  </li>
+                    
+                  {% endif %}
+
+                {% endfor %}
+                {% if page_obj.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                   
+                  {% else %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+
+                  {% endif %}
+
+
+          {% endif %}
+
+
+
+          
 
           <li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
@@ -395,16 +493,41 @@
 
   <!-- SCRIPTS -->
   <!-- JQuery --> 
-  <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script  src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+<!-- You can alternatively load the minified version -->
+
   <!-- Initializations -->
+
   <script type="text/javascript">
+
     // Animations initialization
     new WOW().init();
 
   </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+    
+        $(".js-sell-account").modalForm({
+            formURL: "{% url 'Home:sale_account' %}"
+        });
+    
+    })
+
+    </script>
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}">
+    {% register_notify_callbacks callbacks='fill_notification_badge, my_special_notification_callback' %}
+    </script>
+  <script>
+    
+    function my_special_notification_callback(data) {
+        for (var i=0; i < data.unread_list.length; i++) {
+            msg = data.unread_list[i];
+            // console.log(msg);
+            alert(msg)
+        }
+    }
+  </script>  
   {% endblock %}
 </body>
 

@@ -46,13 +46,15 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'django_countries',
     'paypal.standard.ipn',
+    "dashboard",
 
-    'mpesa_api.core',
-    'mpesa_api.util',
     'rest_framework',
     'rangefilter',
-    
-    
+    "bootstrap_modal_forms",
+    'phonenumber_field',
+    "MpesaApp",
+    'notifications',
+ 
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'djangoProject.urls'
@@ -134,7 +137,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 
@@ -168,5 +173,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
+
 ### mpesa Payment
+# celery things
+
+os.environ.setdefault('FORKED_BY_MULTIPROCESSING', '1')
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
 
