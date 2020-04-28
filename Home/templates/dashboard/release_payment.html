@@ -65,23 +65,23 @@
 
                         <!--Table body-->
                         <tbody>
-                      {% if order %}
+                      {% for ord in  order %}
                       
                           <tr class="table-info">
                             <th scope="row">1</th>
-                            <td>{{ order.id }}</td>
-                            <td>{{ order.amount}}</td>
-                            <td> {{ order.seller}}</td>
+                            <td>{{ ord.id }}</td>
+                            <td>{{ ord.amount}}</td>
+                            <td>{{ ord.seller}}</td>
 
                             <td> <div class="text-center">
-                              <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">
-                               Release Payment </a>
+                              <button onclick="releaseClicked(this);" class="btn btn-default btn-rounded mb-4" >
+                               Release Payment </button>
                             </div>
                             </td>
 
                           </tr>
 
-                        {% else %}
+                        {% empty %}
 
                         <tr>
                           
@@ -90,7 +90,7 @@
                           
                         </tr>
 
-                        {% endif %}
+                        {% endfor %}
                           
                         
                         </tbody>
@@ -107,7 +107,7 @@
 
     </div>
 
-          <!--Modal: Login / Register Form-->
+          <!--Modal: release payment Form-->
         <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
           aria-hidden="true">
           <div class="modal-dialog modal-notify modal-info " role="document">
@@ -132,7 +132,7 @@
 
                   <div class="col-11">
 
-                      <label class="ml-2" data-error="wrong" data-success="right" for="checkbox">I hereby confirm the release of payment of Ksh:200, and acceptance of <a class="green-text"> Terms and Conditions</a>  herein Laid.</label>
+                      <label id="confirmationMessage" class="ml-2" data-error="wrong" data-success="right"  ></label>
                  
                     </div>
                 
@@ -140,7 +140,7 @@
         
               </div>
               <div class="modal-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-default">Login</button>
+                <button type="submit" class="btn btn-default">Submit</button>
 
               </form>
               </div>
@@ -149,7 +149,7 @@
         </div>
         
         
-    <!--Modal: Login / Register Form-->
+    <!--Modal: release paymentForm-->
 
 
     <!-- Central Modal Medium Success -->
@@ -193,22 +193,36 @@ aria-hidden="true">
 
     <script>
 
+      function releaseClicked(event) {
+        
+        var row = $(event).parents("tr");
+        var cols = row.children("td");
+
+        Window.data = {
+            "id": $(cols[0]).text(),
+            "amount":$(cols[1]).text(),
+            "seller":$(cols[2]).text(),       
+        };
+        data = Window.data
+        $("#confirmationMessage").append("<p> I hereby confirm the release of payment of <strong> $ " +
+        data.amount +"</strong> to <strong> " + data.seller + "</strong>  in accordance with this <a href='' class='green-text'> Terms and Conditions</a> </p>")
+        console.log(data);
+        $("#modalLoginForm").modal("show");
+      }
+
       $(".post-form").on("submit" ,function(e) {
         e.preventDefault();
         $("#modalLoginForm").modal("hide");
         $('.modal-backdrop').remove();
         
+        data = Window.data;
+        data["csrfmiddlewaretoken"] = "{{ csrf_token }}";
+
         $.ajax({
           url: "{% url 'dashboard:validate_release' %}" ,         
           type:"GET" , 
           async: true,
-          data:{
-            "id": "{{ order.id }}",
-            "amount": "{{ order.amount }}",
-            "checkbox":"true",
-            "seller":"{{ order.seller }}",
-            "csrfmiddlewaretoken":"{{ csrf_token }}",
-          } ,
+          data:data,
           dataType: 'json',
           success: function (data) {
 

@@ -60,11 +60,14 @@
           height: 100vh;
         }
       }
+      
       {% endblock %}
-
+     
     </style>
 
+{% block style %}
 
+{% endblock %}
    
     
 </head>
@@ -158,17 +161,18 @@
 
 
 
+
 <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
 <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
 <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script  src="{% static 'js/bootstrap.min.js' %}"></script>
-
 
 {% block scripts %}
 <script type="text/javascript">
   // Animations initialization
   new WOW().init();
 </script>
+
 {% endblock %}
 
 </body>

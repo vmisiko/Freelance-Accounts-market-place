@@ -90,7 +90,7 @@ class index(generic.ListView):
     def get_queryset(self):
         queryset =  super(index, self).get_queryset()
 
-        notify.send(self.request.user, recipient=self.request.user, verb =" hey your first notification")
+        # notify.send(self.request.user, recipient=self.request.user, verb =" hey your first notification")
        
         if self.request.method == "GET" and self.request.GET:
 

@@ -53,6 +53,6 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
       
     print (response.text)
 
-    return response.json
+    return response.text
 
 # lipa_na_mpesa(phone_number = "0721649416", amount = "23", AccountReference = "1234556")

@@ -3,7 +3,7 @@
 
 <!-- transaction History -->
 {% block content%}
-
+<!-- 
         <section class = " mt-5 pt-5 ">
           <div id= "contact" class="container mt-3 "> 
             <h1 class="d-flex justify-content-center  animated rotateIn "> <i> Transaction History </i> </h1>
@@ -60,6 +60,283 @@
               </div>
               <hr class="mb-5">
           </div>
-        </section >
+        </section > -->
 
+    <main class="container mt-5 pt-5 ">
+      <h1 class="text-center"><i> View Your Listings </i></h1>
+
+        <ul class="nav nav-tabs md-tabs " id="myTabMD" role="tablist">
+         
+          <li class="nav-item">
+            <a class="nav-link active" id="profile-tab-md" data-toggle="tab" href="#profile-md" role="tab" aria-controls="profile-md"
+              aria-selected="false"> Accounts Orders status</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="accounts-tab" data-toggle="tab" href="#accounts" role="tab" aria-controls="accounts"
+              aria-selected="false"> Accounts Posted </a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" id="home-tab-md" data-toggle="tab" href="#home-md" role="tab" aria-controls="home-md"
+              aria-selected="true"> Transaction History </a>
+          </li>
+
+        </ul>
+        
+        <div class="tab-content " id="myTabContentMD">
+         
+      <!-- Account status  -->
+          <div class="tab-pane fade show active" id="profile-md" role="tabpanel" aria-labelledby="profile-tab-md">
+            <div class="card" style="overflow-y:scroll; height:400px;"> 
+              <h4 class="card-header"> Accounts Orders status</h4>
+              <div class="table-responsive  text-nowrap">
+                  
+          
+                  <!--Table-->
+                  <table class="table table-hover ">
+          
+                    <!--Table head-->
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Orderid</th>
+                        <th>Date</th>
+                        <th>amount</th>
+                        <th> item </th>
+                        <th> Order status</th>
+                        <th> Money Release </th>
+                        <th> Refunded </th>
+                        
+                        
+                        
+                      </tr>
+                    </thead>
+                    <!--Table head-->
+          
+                    <!--Table body-->
+                    <tbody>
+          
+                     {% for object in order %} 
+                      <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{ object.id }}</td>
+                        <td>{{ object.ordered_date }}</td>
+                        <td>{{ object.amount }}</td>
+                        <td>
+                          {% for obj in object.items.all %}
+
+                            <p> {{obj.item.title}} </p>
+
+                          {% endfor %}
+                        </td>
+                        <td>
+          
+
+                          {% if object.refund %}
+
+                          <span class="badge badge-danger badge-pill" style="font-size: medium;"> Order cancelled </span>
+
+                          {% elif object.ordered %}
+          
+                          <span class="badge badge-success badge-pill" style="font-size: medium;"> order complete </span>
+                          
+          
+                          {% else %}
+          
+                          <span class="badge purple badge-pill" style="font-size: medium;"> order in progress</span>
+          
+                          {% endif %}
+          
+          
+          
+                        </td>
+
+                        <td>
+          
+                          {% if object.refund %}
+
+                          <span class="badge badge-danger badge-pill" style="font-size: medium;"> Not Released </span>
+          
+                          {% elif object.released %}
+          
+                          <span class="badge badge-success badge-pill" style="font-size: medium;"> Released </span>
+
+                          {% else %}
+          
+                          <span class="badge purple badge-pill" style="font-size: medium;"> Release pending.... </span>
+          
+                          {% endif %}
+          
+          
+          
+                        </td>
+                        <td>
+          
+                          {% if object.refund %}
+          
+                          <span class="badge badge-danger badge-pill" style="font-size: medium;"> Refunded </span>
+
+          
+                          {% else %}
+          
+                          <span class="badge badge-success badge-pill" style="font-size: medium;"> Not Refunded </span>
+          
+                          {% endif %}
+          
+          
+          
+                        </td>
+                                    
+                      </tr>
+          
+                      {% empty %}
+                      <tr>
+                        <th scope="row"> </th>
+                        <td colspan="4"> You have no previous orders to refund you Money </td>
+                        
+                      </tr>
+                      {% endfor %}
+          
+                    </tbody>
+                    <!--Table body-->
+          
+          
+                  </table>
+                  <!--Table-->
+                </div>
+          
+          </div>
+          </div>
+      <!-- Accounts status  -->
+
+          <!-- Accounts Posted  -->
+
+          <div class="tab-pane fade" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
+            <div class="card" style="overflow-y:scroll; height:400px;"> 
+              <h4 class="card-header"> Accounts posted </h4>
+              <div class="table-responsive  text-nowrap">
+                  
+          
+                  <!--Table-->
+                  <table class="table table-hover ">
+          
+                    <!--Table head-->
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>item</th>
+                        <th>Date posted</th>
+                        <th>amount</th>
+                         
+                        
+                      </tr>
+                    </thead>
+                    <!--Table head-->
+          
+                    <!--Table body-->
+                    <tbody>
+          
+                     {% for item in items %} 
+                      <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.created_at}}</td>
+                        <td> $   
+                          
+                          {% if item.discountprice  %}
+                    
+                               {{ item.get_discount_price }}
+      
+                          {% else %}
+      
+                              {{ item.price }}
+      
+                          {% endif %}
+
+                        </td>
+                        
+                      </tr>
+          
+                      {% empty %}
+                      <tr>
+                        <th scope="row"> </th>
+                        <td colspan="4"> You have no previous orders to refund you Money </td>
+                        
+                      </tr>
+                      {% endfor %}
+          
+                    </tbody>
+                    <!--Table body-->
+          
+          
+                  </table>
+                  <!--Table-->
+                </div>
+          
+          </div>
+          </div>
+
+          <!-- Accounts posted  -->
+
+
+          <!-- transaction history  -->
+          <div class="tab-pane fade " id="home-md" role="tabpanel" aria-labelledby="home-tab-md">
+            <div class="card">
+              <h3 class="card-header">Transaction History </h3>
+              <div class="card-body table-responsive  text-nowrap" style="overflow:auto; height: 500px ">
+                  
+       
+                  <!--Table-->
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Payment Mode</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        
+                      </tr>
+                    </thead>
+
+                
+
+                    <tbody>
+                      
+                  {% for obj in object_list %}
+                      <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ obj.user}}</td>
+                        <td>{{ obj.payment_mode}}</td>
+                        <td>$ {{ obj.amount}}</td>
+                        <td>{{ obj.date }}</td>
+                        {%if obj.status == False %}
+                        <td><span class="badge badge-pill purple " style="font-size: medium;"> pending ... </span></td>
+                        {% else %}
+                        <td><span class="badge badge-pill badge-success " style="font-size: medium;"> paid </span></td>
+                        
+                        {% endif %}
+                      </tr>
+                  {%  empty %}
+                      <tr>
+                        <td colspan="6" class="text-center"> You have no previous Transctions </td>
+                      </tr>
+                    
+                  {% endfor %}
+                    
+                    </tbody>
+                  </table>
+                  <!--Table-->
+                </div>
+      
+          </div>
+          </div>
+          <!-- transaction history  -->
+
+          
+        </div>
+
+       <hr> 
+</main>
 {% endblock %}

@@ -44,8 +44,8 @@
                   <th scope="row">{{ forloop.counter }}</th>
                   <td>{{ order_item.item.title }}</td>
                   <td>
-                    $
-                    {% if order_item.item.discountprice  %}
+                    
+                    $ {% if order_item.item.discountprice  %}
                     
                         {{ order_item.after_discount_price }}
 

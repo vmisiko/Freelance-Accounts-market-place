@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>Vue App</title>
+        <!-- Font Awesome -->
+{% block style %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{%static 'css/v-cloak.css'%}">
+    <!-- Required Stylesheets -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+
+
+    <!-- Load polyfills to support older browsers -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
+
+    <!-- Required scripts -->
+    <script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+ {% endblock %}
+  </head>
+
+
+  <body>
+    {% block content %}
+    <!-- Our application root element -->
+    <main id="app" class="container my-5 pt-5">
+      <h1 class="mb-3 text-center text-muted animated rotateIn delay-1s"> <i>Pay With Mpesa</i></h1>
+        <section class="row">
+          <!-- grid column  payment-->
+            <div v-cloak class="col-lg-7 m-auto col-md-12">
+              <!-- <h4 class="text"><span class="text-muted">Pay through M-pesa</span> </h4> -->
+              <to-do></to-do>
+              <hr class="mb-3">
+            </div> 
+            
+          <!--  greed column payment -->
+
+          <!-- grid column dataset -->
+            <div class="col-lg-4 col-md-12">
+
+              
+
+                <!-- Heading -->
+                <h4 class="d-flex justify-content-between align-items-center mb-3 ">
+                  <span class="text-muted">Your cart</span>
+                  <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+                </h4>
+      
+                <!-- Cart -->
+                <ul class="list-group mb-3 z-depth-1">
+                
+                  {% for order_item in order.items.all %}
+                  <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                      <h6 class="my-0">{{ order_item.item.title }}</h6>
+                      <small class="text-muted">{{ order_item.item.description }} </small>
+                    </div>
+                    <span class="text-muted">$ {{ order_item.get_final_price }} </span>
+                  </li>
+                  {% empty %}
+
+                  <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    You have no item in the cart
+                  </li>
+                  {% endfor %}
+                  <li class="list-group-item d-flex justify-content-between bg-light">
+                    <div class="text-success">
+                      <h6 class="my-0">Promo code</h6>
+                      <small>EXAMPLECODE</small>
+                    </div>
+                    <span class="text-success">-0/=</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span>Total (Ksh)</span>
+                    <strong>{{ amount }}</strong>
+                  </li>
+                </ul>
+                <!-- Cart -->
+      
+                <!-- Promo code -->
+                <form class="card p-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>
+                    </div>
+                  </div>
+                </form>
+                <!-- Promo code -->
+      
+           
+            </div>
+          <!-- grid column shopping -->
+          
+        </section>
+
+
+      <success></success>
+     
+        <hello></hello>
+    </main>
+    <style>
+        .modal-dialog .modal-content .modal-header {
+            border-top-left-radius: .125rem;
+            border-top-right-radius: .125rem;
+            height: fit-content;
+        }
+    </style>
+    <!-- Start running your app -->
+    {% endblock %}
+
+    {% block scripts %}
+   
+    <script>
+    Vue.component("success", {
+        template: `
+                    
+            <div>      
+
+            <b-modal id="success" 
+            content-class="shadow"
+            title="Transaction successful"
+            :header-bg-variant="headerBgVariant"
+            :header-text-variant="headerTextVariant"
+            :body-bg-variant="bodyBgVariant"
+            :body-text-variant="bodyTextVariant"
+            :footer-bg-variant="footerBgVariant"
+            :footer-text-variant="footerTextVariant"
+ 
+            >
+
+            <div class="text-center">
+
+                    <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s green-text"></i>
+                                    
+                   <P> Thank you for working with Freelancing Accounts. Your order is now complete and the money is still in your account.Take 
+                   your time to
+                    go through the account and if satisfied, You can release payment to the seller. Incase you are not satisfied with 
+                    the account, you can ask for a Refund within a span of 3 days. If no complain is registered after those 3 days, the money will be transfered to the seller. Good luck with your new Account.
+   
+                    </P>
+             
+                                    
+            </div>
+
+
+            </b-modal>
+
+            </div>
+        `,
+        data: function () {
+            return {
+                show: false,
+                variants: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'dark'],
+                headerBgVariant: 'success',
+                headerTextVariant: 'light',
+                bodyBgVariant: 'light',
+                bodyTextVariant: 'dark',
+                footerBgVariant: 'success',
+                footerTextVariant: 'light'
+            }
+        },
+
+        
+
+    });
+
+    Vue.component("hello", {
+        template:` <div>      
+            
+            <b-modal id="error" 
+            content-class="shadow"
+            title="Wrong Format"
+            :header-bg-variant="headerBgVariant"
+            :header-text-variant="headerTextVariant"
+            :body-bg-variant="bodyBgVariant"
+            :body-text-variant="bodyTextVariant"
+            :footer-bg-variant="footerBgVariant"
+            :footer-text-variant="footerTextVariant"
+            >
+
+            <div class="text-center px-3">
+
+                    
+
+                   <p > Wrong format entered! Please follow the format provided.   </P>  
+                    <i class="fas fa-times fa-5x mb-3 animated rotateIn red-text text-center"></i>          
+                       
+                                    
+            </div>
+
+            <template v-slot:modal-footer="{ cancel }" >
+                <b-button size="sm" variant="danger" @click="cancel()">
+                    Cancel
+                </b-button>
+            </template>
+            </b-modal>
+
+            </div>`,
+            data: function () {
+            return {
+                show: false,
+                variants: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'dark'],
+                headerBgVariant: 'danger',
+                headerTextVariant: 'light',
+                bodyBgVariant: 'light',
+                bodyTextVariant: 'dark',
+                footerBgVariant: 'warning',
+                footerTextVariant: 'light'
+            }}
+        
+        });
+
+
+
+    Vue.component("to-do", {
+        delimiters: ['[[', ']]'],
+        props: ['todo'],
+        template: `<div class="m-auto"> 
+                        <div v-cloak v-show="ishidden" class="card text-center">
+
+                              <div class="card-header green-text"> Lipa na M-pesa TIll </div>
+                              <div class="card-body d-flex justify-content-center" >  
+                                <form id="post-form"  >
+                                  <p class="text-muted ">
+                                  Enter your M-Pesa phone number
+                                  below and Click Pay now then check your phone handset for an instant payment prompt
+                                    from safaricom M-pesa.
+                                  </p>
+
+                                    <p> Enter following format after +254: 721xxxxxx <p>
+                                  [[ phone ]]
+
+                                  <div class="md-form input-group mb-3 ">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text md-addon blue-text" id="phone">+254</span>
+                                    </div>
+                                    <input type="tel" class="form-control" v-model='phone' placeholder="Phone Number" aria-label="Phone" aria-describedby="phone">
+                                  </div>
+
+                                  <button type="submit" class="btn btn-primary m-auto" @click.prevent="postform" > Pay Now </button>
+                                  <hr>
+                                <p> Already paid? <a href="" @click.prevent="ishidden = !ishidden;status=!status" >Enter your mpesa code</a></p>
+                                </form>
+                                
+                              </div>
+                        
+                        </div>
+
+
+
+
+
+                        <div v-show="!ishidden" class="card text-center">
+                          <div class="card-header green-text"> Lipa na M-pesa TIll </div>
+                              <div class="card-body" >
+
+                                <!-- loading -->
+
+                                <div>
+                                     [[ message ]]
+                                    <div v-show="!status" class="spinner-border" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            
+                                <div v-cloak v-show="status">
+                                <p> Enter Your Transaction Code </p>
+
+                                <form id="post-code" class=""> 
+                                  
+                                  <div class="md-form col-6 mx-auto mb-3">
+                                    <input type="text" id="id_code" v-model="code" class="form-control" placeholder="Mpesa code" required>
+                                    
+                                  </div>
+                                  
+                                <button type="submit" class="btn btn-primary m-auto" @click.prevent ="postcode"> Confirm payment </button>
+                                <hr>
+                                <p> Not yet paid? <a href="" @click.prevent="ishidden = !ishidden; status=!status" >Back</a></p>
+                                </form>
+
+                                  
+
+                                </div>
+
+
+                              </div>
+                          
+
+                        </div>
+                  </div>
+                        
+                  `,
+        data:function () {
+          return {
+            phone: "",
+            ishidden:true,
+            code:"",
+            status:false,
+            message:"Pleas Wait ....."
+          
+          }
+        },
+        methods: {
+            postform: function () {
+                // alert("hey cicked");
+                this.ishidden = !this.ishidden;
+               
+                axios.post('{% url "MpesaApp:validate_payment" %}', {
+                body: {
+                    "phone_number": "254"+this.phone,
+                }
+                })
+                .then(response => {
+                    message = response.data.message;
+                    message1= message.ResponseDescription
+                    // console.log(response.data)
+                    if ("ResponseCode" in message) {
+                        this.status =true;
+                        this.message=message1; 
+                        popover =this.$bvModal.msgBoxOk('Enter Pin once Prompted', {
+                                title: 'Confirmation',
+                                size: 'sm',
+                                buttonSize: 'sm',
+                                okVariant: 'success',
+                                headerClass: 'p-2 border-bottom-0',
+                                footerClass: 'p-2 border-top-0',
+                                centered: true
+                                });
+                        setTimeout(function () {popover}, 5000)
+
+                    }
+                    else {
+                        this.$bvModal.show("error");
+                        this.ishidden = !this.ishidden;
+                        
+                    };
+
+
+                })
+                .catch(e => {
+                console.log(e);
+
+                });
+            },
+
+            postcode: function () {
+                axios.post('{% url "MpesaApp:validate_mpesa_code" %}', {
+                    body: {
+                        "mpesa_code": this.code,
+                        "order_id" : "{{ order.id }}"
+                    }
+                })
+                .then(response => {
+                   
+                    if (response.data.message == "Transaction Successful") {
+
+                  
+                        this.$bvModal.show('success');
+                    }
+                    else {
+                    this.$bvModal.msgBoxOk(' The mpesa code entered is False. Please confirm if you have entered the right code!', {
+                                title: 'Failed',
+                                size: 'sm',
+                                buttonSize: 'sm',
+                                okVariant: 'danger',
+                                headerClass: 'p-2 border-bottom-0',
+                                footerClass: 'p-2 border-top-0',
+                                centered: true
+
+                    })};
+
+
+                })
+                .catch(e =>{
+                    console.log(e)
+                });
+
+
+                    
+                }
+
+                // this.$bvModal.show('success');
+
+            }
+        
+
+      });
+
+
+      window.app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+          name: ''
+        },
+      
+      })
+
+    //   setTimeout(function () {window.app}, 10000)
+    </script>
+    
+    {% endblock %}
+  </body>
+</html>

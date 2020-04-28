@@ -4,7 +4,7 @@ from .forms import PayoutForm
 from django.views import generic
 from django.http import JsonResponse
 from dashboard.models import AccountsModel
-from Home.models import Order
+from Home.models import Order, Item
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -93,6 +93,19 @@ class TransactionsView(generic.ListView):
     model = WithdrawPayouts
     template_name = "dashboard/view_transactions.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(TransactionsView, self).get_context_data(**kwargs)
+
+        order = Order.objects.filter(seller = self.request.user).order_by("-ordered_date")
+
+        items = Item.objects.filter(created_by = self.request.user).order_by("-created_at")
+
+        context["items"] = items
+
+        context["order"] = order
+
+        return context
+
 class Release_Payment(generic.ListView):
 
     model = Order
@@ -104,7 +117,7 @@ class Release_Payment(generic.ListView):
         order1 = Order.objects.filter(user = self.request.user, ordered= True, released = False)
         
         if order1:
-            order = Order.objects.get(user = self.request.user, ordered= True, released = False)
+            order = Order.objects.filter(user = self.request.user, ordered= True, released = False)
             self.order = order
             context["order"] = order
 
@@ -122,7 +135,7 @@ def validate_release(request):
     amount = request.GET["amount"]
     order_id  = request.GET["id"]
     seller = request.GET["seller"]
-    order = Order.objects.get(user__username = request.user, ordered=True, released =False )
+    order = Order.objects.get(id=order_id )
 
     amount1 = int(order.amount) - int(amount)
 

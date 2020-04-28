@@ -1,3 +1,4 @@
+import json
 from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -34,13 +35,44 @@ def view_for_mpesa(request):
     }
     return render(request, "mpesatemp/payment_via_mpesa.html", context)
 
+def view_for_mpesa2(request):
+
+    order1 = Order.objects.filter(user =request.user,  ordered = False)
+    if order1:
+        order = Order.objects.get(user =request.user,  ordered = False)
+        form = Mpesa_checkout()
+        form2 = Mpesa_c2b_checkout()
+
+        amount1 = order.get_total()
+        amount = int(amount1) *100
+        
+            
+        context = {"form": form,
+                    "order":  order,
+                    "amount": amount,
+                    "form2" : form2
+        }
+        return render(request, "mpesatemp/mpesa2.html", context)
+    else:
+        context = {
+             "order":  None,
+             "amount":"00",
+        }
+
+        return render(request, "mpesatemp/mpesa2.html", context)
 
 @csrf_exempt
 def lnm_validate_post(request):
     data = {}  
+    print(request.body, "this is body")
+    print(request.body, "this is post")
+    data4 = json.loads(request.body.decode('utf-8'))
+    phone_number = data4["body"]["phone_number"]
+    
+    
     callbackurl = request.build_absolute_uri(reverse('MpesaApp:lnm-callbackurl'))
     print(callbackurl, " this is callbackuri")
-    phone_number = request.GET.get('phone_number', None)
+    # phone_number = request.GET.get('phone_number', None)
     print(phone_number)
 
     order = Order.objects.get(user =request.user,  ordered = False)
@@ -59,9 +91,14 @@ def lnm_validate_post(request):
             pass
 
         try: 
-            lipa_na_mpesa(phone_number = phone_number, amount = amount, callbackurl = callbackurl, AccountReference = "123456" )
-
-            data["message"] = "Stk-push Successful!! \n Enter The mpesa code "
+            obj=lipa_na_mpesa(phone_number = phone_number, amount = amount, callbackurl = callbackurl, AccountReference = "123456" )
+            obj1 = json.loads(obj)
+           
+            
+               
+            data["message"] = obj1
+        
+            
                 
             return JsonResponse(data)
            
@@ -79,13 +116,18 @@ def lnm_validate_post(request):
 
 @csrf_exempt
 def validate_mpesa_code(request):
-    order = Order.objects.get(user = request.user,  ordered = False)
+    code = json.loads(request.body.decode('utf-8'))
+    print(code)
+    mpesa_code = code["body"]["mpesa_code"]
+    order_id = code["body"]["order_id"]
+
+    order = Order.objects.get(id=order_id)
     amount = order.get_total()
     
     
     data = {}  
     
-    mpesa_code = request.GET.get('mpesa_code', None)
+    print(mpesa_code)
 
     if mpesa_code:
         result1 = LNMOnline.objects.filter( MpesaReceiptNumber__iexact=mpesa_code, paid = False).exists()
