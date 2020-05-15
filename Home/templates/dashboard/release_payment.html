@@ -11,7 +11,7 @@
 <body>
     {% block content%}
     
-    <div class="container  mt-5 pt-5">
+    <div class="container ">
 
         
         <h1 class="text-center animated flipInY delay-1s"><i>
@@ -56,6 +56,7 @@
                           <tr>
                             <th>#</th>
                             <th>order ID</th>
+                            <th>Order Item</th>
                             <th>Total Amount</th>
                             <th> Seller</th>
                             <th>Release</th>
@@ -70,6 +71,13 @@
                           <tr class="table-info">
                             <th scope="row">1</th>
                             <td>{{ ord.id }}</td>
+                            <td> 
+                              {% for obj in ord.items.all %}
+
+                              <p> {{obj.item.title}} </p>
+  
+                            {% endfor %}
+                            </td>
                             <td>{{ ord.amount}}</td>
                             <td>{{ ord.seller}}</td>
 

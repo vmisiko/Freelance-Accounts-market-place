@@ -29,6 +29,7 @@ def payment_notification(sender, **kwargs):
         if order.get_total() == ipn.mc_gross:
             # mark the order as paid
             order.ordered = True
+            order.items.ordered = True
             order.amount= int(ipn.mc_gross)
             # order.items.ordered = True
             order.save()

@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 {% load cart_template_tags %}
 <!-- {% load  staticfiles %} -->
-{% load static%}
+{% load static %}
 
 {% load login_tag %}
 {% load i18n %}
@@ -25,7 +25,25 @@
     <link href="{% static 'css/mdb.min.css'%}" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="{% static 'css/style.min.css' %} " rel="stylesheet">
+    <link
+    type="text/css"
+    rel="stylesheet"
+    href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+  />
+  <link
+    type="text/css"
+    rel="stylesheet"
+    href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+  />
 
+
+  <!-- Load polyfills to support older browsers -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"></script>
+
+  <!-- Required scripts -->
+  <script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style type="text/css">
       html,
       body,
@@ -134,14 +152,17 @@
 </div>
 
   <!-- modal snippet  -->
-
+<section class="">
   {% include 'nav.html' %}
+</section>
+ 
     
 
 {% if messages %}
     {% for message in messages %}
       <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
         {{ message }}
+       
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -149,10 +170,22 @@
     {% endfor %}
 {% endif %}
 
+<div id="app-alert"  class=" container-fluid mt-5 pt-1 " >
+  <div id="notification" class="alert alert-primary alert-dismissible fade show mt-5" role="alert" v-cloak v-show="alert" >
+        
+       <P id=""> [[message]]</P>
+      <button type="button" class="close" data-hide="alert" @click='alert = !alert' aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+</div>
+
+
+<div class="mt-4">
     {% block content %}
 
     {% endblock %}
-
+</div>
   
 
 {% include "footer.html" %}
@@ -167,13 +200,123 @@
 <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script  src="{% static 'js/bootstrap.min.js' %}"></script>
 
-{% block scripts %}
-<script type="text/javascript">
-  // Animations initialization
-  new WOW().init();
-</script>
+
+  {% block scripts %}
+
 
 {% endblock %}
+
+
+
+<script>
+
+    
+    
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app-alert',
+        data: {
+          message: "",
+          alert:false
+        },
+        methods: {
+            poll(){
+
+                
+                // console.log("hey working")
+                axios.get('{% url "dashboard:order_notification" %}')
+                .then(response => {
+                  // console.log(response.data)
+                  $('#notification','.alert').show();
+                  data = response.data
+                  console.log(data)
+                  var audio = new Audio('{% static "when.mp3" %}');
+                  if (Object.keys(data).length === 0) {
+                    console.log("empty")
+                  }
+                  else if  (data.refund == false) {
+                      this.alert = !this.alert
+                      if (data.ordered ==true  && data.released == false) {
+                        this.message=data.buyer + "'s order is complete. Check your Orders and Transactions";
+                        audio.play();
+                        
+                        // console.log(data)
+                      }
+
+                      else if (data.ordered == false && data.released == false) {
+                        this.message = data.buyer + " is in processes of ordering your product";
+                        audio.play();
+                        
+                      }
+                      else if (data.ordered ==true && data.released ==true){
+                        this.message= data.buyer+ " has released your Money, Check your Balance";
+                        audio.play();
+                        
+                      }
+                      else if (data.ordered ==true && data.released ==true && data.refund==true ){
+                        this.message= data.buyer + " has cancelled your order";
+                        audio.play();
+                        
+                      }
+                     else {
+                      this.message = "";
+                      this.alert = !this.alert;
+                      audio.play();
+
+                     }
+                      
+                  }
+                  else {
+                    console.log("cancelled")
+                    this.message= data.buyer + " has cancelled the order"
+                    this.alert = !this.alert;
+                    audio.play();
+                    
+                    // this.message = data.buyer + " has Cancelled ordering your Product Your Order";
+                    // this.alert = !this.alert
+                    // console.log(this.message.length)
+                    // this.alert = false
+                  }
+
+                })
+                .catch(e => {
+                console.log(e);
+
+                });
+              },
+            // hide: function() {
+            //     $('#notification').hide();
+            //   },
+        },
+
+        mounted: function () {
+                this.poll();
+
+                setInterval(function () {
+                  this.poll();
+                }.bind(this), 30000); 
+              },
+      
+      });
+  
+ 
+</script>
+
+<script>
+   // (function poll(){
+  //   console.log("hey")
+  //   $.ajax({
+  //      url: "{% url  'dashboard:order_notification' %}",
+  //      type:"GET", 
+  //      success: function(data){
+  //         console.log(data)
+
+  //         document.getElementById("notification1").innerHTML = "Your Item was ordered"
+          
+
+  //   }, dataType: "json", complete: poll, timeout: 300000 });
+  //   })();
+</script>
 
 </body>
 

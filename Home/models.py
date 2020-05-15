@@ -9,7 +9,7 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from autoslug import AutoSlugField
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
-
+import time
 
 
 class Products(models.Model):

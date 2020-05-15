@@ -42,7 +42,7 @@ def send_lnm_signal(sender, instance, **kwargs):
         account.save()
         print("updated Accounts")
 
-        order = Order.objects.get(user__username = user)
+        order = Order.objects.get(user__username = user, ordered=False)
         order.amount = int(amount1)
         order.save()
 

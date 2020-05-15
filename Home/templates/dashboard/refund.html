@@ -9,9 +9,9 @@
 <body>
 {% block content%}
 
-<Main class="container mt-5">
+<Main class="container">
 
-    <h1 class="mt-5 pt-5 text-center "> <i> Request Refund </i></h1>
+    <h1 class="text-center "> <i> Request Refund </i></h1>
 
   <ul class="nav nav-tabs md-tabs " id="myTabMD" role="tablist">
     <li class="nav-item">
@@ -40,6 +40,7 @@
                   <th>#</th>
                   <th>Orderid</th>
                   <th>Date</th>
+                  <th>Item</th>
                   <th>amount</th>
                   <th>Seller</th>
                   <th>Refund</th>
@@ -56,6 +57,14 @@
                   <th scope="row">{{forloop.counter}}</th>
                   <td>{{ object.id }}</td>
                   <td>{{ object.ordered_date }}</td>
+                  <td>
+
+                    {% for obj in object.items.all %}
+
+                    <p> {{ obj.item.title }} </p>
+
+                  {% endfor %}
+                  </td>
                   <td>{{ object.amount }}</td>
                   <td>{{ object.seller }}</td>
                   <td>

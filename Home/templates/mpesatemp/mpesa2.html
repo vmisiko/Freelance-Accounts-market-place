@@ -45,7 +45,7 @@
   <body>
     {% block content %}
     <!-- Our application root element -->
-    <main id="app" class="container my-5 pt-5">
+    <main id="app" class="container ">
       <h1 class="mb-3 text-center text-muted animated rotateIn delay-1s"> <i>Pay With Mpesa</i></h1>
         <section class="row">
           <!-- grid column  payment-->
@@ -400,14 +400,61 @@
 
 
                     
-                }
+                },
 
                 // this.$bvModal.show('success');
+            validpay() {
+              axios.post('{% url "MpesaApp:valid_pay" %}', {
+                    body: {
+                        "phone": "254"+this.phone,
+                        "order_id" : "{{ order.id }}"
+                        
+                    }
+                })
+                .then(response => {
+                  console.log(response.data)
+                  // this.$bvModal.show('success');
+                   
+                    if (response.data.message == true) {
 
+                  
+                        this.$bvModal.show('success');
+                    }
+                    else {
+                    // console.log("not true");
+                    }
+
+                })
+                .catch(e =>{
+                  console.log(e)
+                });
+
+              },
+            
+            init(){
+              if (this.phone.length >= 9 ) {
+                console.log("hey polling")
+                this.validpay();
+              }
+
+             
             }
-        
 
-      });
+          },
+
+        mounted: function () {
+            this.init();
+              // if (this.phone.length != 0) {
+              //   console.log("hey polling")
+              //   this.validpay();
+
+                setInterval(function () {
+                    this.init();
+                  }.bind(this), 3000); 
+              // };            
+        }
+      
+    });
 
 
       window.app = new Vue({

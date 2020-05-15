@@ -4,7 +4,7 @@
 
  
 
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark mb-5">
         <div class = 'container' >
             <a class="navbar-brand" href="/home/">
               <img src="{% static 'logo.png' %}" height="45px" alt="">
@@ -57,7 +57,7 @@
               {% notifications_unread as unread_count %}
               <li class="nav-item">
                 <a class="nav-link waves-effect">
-                  <i class="fas fa-bell white-text">
+                  <i class="fas fa-bell white-text"></i>
                     <Sup>
                       <span class="badge success-color badge-pill z-depth-1 mr-1 animated heartBeat infinite">{{unread_count}}</span>
                     </Sup>
@@ -79,6 +79,9 @@
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle border border-light rounded waves-effect  waves-light" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-user-check"></i>  {{request.user}}
+                      <Sup>
+                        <span class="badge success-color badge-pill z-depth-1 mr-1 animated heartBeat infinite">{{unread_count}}</span>
+                      </Sup>
                     </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
@@ -86,9 +89,15 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/dashboard/release_payment/">Release payment</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/dashboard/transactions/">Orders and Transactions</a>
+                        <a class="dropdown-item" href="/dashboard/transactions/">Orders and Transactions
+                          <Sup>
+                            <span class="badge warning-color badge-pill z-depth-1 mr-1 animated heartBeat infinite" id="notification1">{{unread_count}}</span>
+                          </Sup>
+                        </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/dashboard/withdraw/">WIthdraw</a>
+                        <a class="dropdown-item" href="/dashboard/withdraw/">WIthdraw
+                          
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/dashboard/refund/">Refund money </a>
                         <div class="dropdown-divider"></div>
@@ -121,3 +130,20 @@
         <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
         <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
         <script  src="{% static 'js/bootstrap.min.js' %}"></script>
+
+        <!-- <script>
+  
+          (function poll(){
+            console.log("hey")
+            $.ajax({
+               url: "{% url  'dashboard:order_notification' %}",
+               type:"GET", 
+               success: function(data){
+                  console.log(data)
+        
+                  document.getElementById("#notification1").innerHTML = "Your Item was ordered"
+                  
+        
+            }, dataType: "json", complete: poll, timeout: 300000 });
+            })();
+        </script> -->

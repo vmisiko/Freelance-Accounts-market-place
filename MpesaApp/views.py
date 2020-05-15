@@ -16,6 +16,68 @@ from .serializers import LNMOnlineSerializer,C2bSerializer, B2cTransaction
 from . models  import LNMOnline,C2bTransaction, B2cTransaction
 from Home.models import OrderItem, Order
 from dashboard.models import AccountsModel
+from django.db.models.signals import post_save
+
+
+code_signal = {}
+
+def lnm_signal(sender, instance, **kwargs):
+
+    phone_number = instance.PhoneNumber
+    amount = instance.Amount
+
+    code_signal["phone"] = phone_number
+    code_signal["amount"] = amount 
+
+post_save.connect(lnm_signal, sender=LNMOnline)
+
+
+@csrf_exempt
+def realtime_validate(request):
+    k = json.loads(request.body.decode('utf-8'))
+    phone = k["body"]["phone"]
+    order_id = k["body"]["order_id"]
+
+    print(phone)
+    
+    
+    data = {}
+
+
+    if "phone" in  code_signal:
+        print(code_signal, "codesignal")
+        fon = code_signal['phone']
+
+        account = AccountsModel.objects.get(phone_number = fon)
+
+
+        order = Order.objects.get(id=order_id)
+        user = account.user
+        print(user, request.user)
+
+        if user == request.user:
+            print("the phone is true")
+            print(f"{phone} equal to {code_signal['phone']}")
+        else:
+            # print("the phone is false")
+            print(f"{phone} not equal to {code_signal['phone']}")
+
+        if user == request.user:
+
+            data["message"] = True
+            order.ordered = True
+            order.items.ordered = True
+            order.save()
+            
+
+        else:
+
+            data["message"]= False
+
+    code_signal.clear()
+
+    return JsonResponse(data)
+
 
 def view_for_mpesa(request):
     
@@ -33,6 +95,7 @@ def view_for_mpesa(request):
                 "amount": amount,
                 "form2" : form2
     }
+
     return render(request, "mpesatemp/payment_via_mpesa.html", context)
 
 def view_for_mpesa2(request):
@@ -150,6 +213,7 @@ def validate_mpesa_code(request):
             order.save()
 
             data["message"] = "Transaction Successful"
+            print("transaction successful")
             
             return JsonResponse(data)
 

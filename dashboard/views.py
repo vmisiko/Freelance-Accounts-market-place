@@ -7,6 +7,59 @@ from dashboard.models import AccountsModel
 from Home.models import Order, Item
 from django.views.decorators.csrf import csrf_exempt
 
+from django.db.models.signals import post_save
+import time
+# from django.dispatch import receiver
+
+ord_notif ={}
+def order_placed(sender, instance, **kwargs):
+
+    order_id = instance.id
+    buyer = instance.user.username
+    seller = instance.seller.get_username()
+    ordered = instance.ordered
+    released = instance.released
+    refund = instance.refund
+
+     
+    ord_notif["order_id"] = order_id
+    ord_notif["buyer"] = buyer
+    ord_notif["ordered"] = ordered
+    ord_notif["seller"] = seller
+    ord_notif["released"] =  released
+    ord_notif["refund"] = refund
+    
+    print(ord_notif)
+
+    return ord_notif
+
+post_save.connect(order_placed, sender=Order)
+
+
+def order_notification(request):
+    # print(ord_notif)
+    data = {}
+    for i in range(5):
+        if "seller" in ord_notif:
+            seller = ord_notif["seller"]
+            
+            print(f"yes available now {ord_notif['seller']}")
+            if ord_notif["seller"] == seller:
+
+                data = { "order_id": ord_notif["order_id"],
+                        "buyer" : ord_notif["buyer"],
+                        "ordered": ord_notif["ordered"],
+                        "seller":ord_notif["seller"],
+                        "released":ord_notif["released"],
+                        "refund":ord_notif["refund"],
+                        }
+
+                print(data, "this is data")
+
+    time.sleep(1)
+    ord_notif.clear()
+    return JsonResponse(data)
+
 
 # Create your views here.
 class WithdrawalView(generic.ListView):
@@ -25,7 +78,6 @@ class WithdrawalView(generic.ListView):
                 
         context = {"form": form,
                     "payouts": payouts,
-                   
                 }
         if int(amount)!= 0:
             context["amount"] = "True"

@@ -13,5 +13,6 @@ urlpatterns = [
   path("validate_release/", views.validate_release, name = "validate_release"),
   path("refund/", views.RefundView.as_view(), name = "refund"),
   path("valid_refund/", views.validate_refund, name = "valid_refund"),
+  path("notifications", views.order_notification, name ="order_notification"),
 
 ]
