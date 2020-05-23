@@ -30,7 +30,7 @@ def live_notify_list(context, list_class='live_notify_list'):
         return ''
 
     notifications = user.notifications.unread()
-    print(notifications[1])
+    # print(notifications[1])
     notifications_li = "\n\n"
     for notification in notifications[:10]:
         

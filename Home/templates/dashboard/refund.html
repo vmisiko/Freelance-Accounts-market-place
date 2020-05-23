@@ -325,24 +325,31 @@
 
   function refund(ctl) {
     var row = $(ctl).parents("tr")
-    $("#btn").hide()
-    $("#loadbtn").show()
+    $("#btn").hide();
+    $("#loadbtn").show();
 
 
     var cols = row.children("td");
-  
+
+    
+    item1 =$(cols[2]).text();
+
+    item =item1.replace(/(\r?\n|\r)/gm, '').trim();
+
+    console.log(item1, item)
     Window.data ={
       "orderid" : $(cols[0]).text(),
       "date" : $(cols[1]).text(),
-      "amount": $(cols[2]).text(),
-      "seller":$(cols[3]).text(),
+      "item": item,
+      "amount": $(cols[3]).text(),
+      "seller":$(cols[4]).text(),
 
     }
     
   
     
     
-  // console.log(Window.data)
+  console.log(Window.data)
   }
 </script>
 {% endblock %}

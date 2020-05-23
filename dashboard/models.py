@@ -38,9 +38,15 @@ class Refund(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
     orderid = models.IntegerField(default=0.0)
     amount = models.FloatField(default = 0.0)
+    seller = models.CharField(max_length= 500,null=True, blank = True  )
+    item = models.CharField(max_length= 500,null=True, blank = True)
     status = models.BooleanField(default = False)
     date = models.DateTimeField(auto_now_add=True,null=True, blank = True )
     reason = models.CharField( max_length = 200, null= True, blank=True)
     mode = models.CharField(max_length=20, null=True, blank = True)
+
+class Conversion(models.Model):
+    rate =  models.FloatField(default = 0.0)
+    date = models.DateTimeField(auto_now_add=True,null=True, blank = True )
 
     

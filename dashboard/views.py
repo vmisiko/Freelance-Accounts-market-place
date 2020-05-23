@@ -13,10 +13,13 @@ import time
 
 ord_notif ={}
 def order_placed(sender, instance, **kwargs):
-
+    seller=""
     order_id = instance.id
     buyer = instance.user.username
-    seller = instance.seller.get_username()
+    if instance.seller:
+        seller = instance.seller.get_username()
+    else:
+        seller = instance.seller 
     ordered = instance.ordered
     released = instance.released
     refund = instance.refund
@@ -189,7 +192,7 @@ def validate_release(request):
     seller = request.GET["seller"]
     order = Order.objects.get(id=order_id )
 
-    amount1 = int(order.amount) - int(amount)
+    amount1 = int(account.amount) - int(amount)
 
     order.released = True
 
@@ -199,9 +202,12 @@ def validate_release(request):
 
     account.save()
 
-    seller_account = AccountsModel.objects.get(user__username=seller )
+    seller_account = AccountsModel.objects.get(user__username = seller )
+
     amount2 = seller_account.amount
-    amount3 = int(amount2) + int(amount)
+    amount_deduct = int(amount) - 2
+    print(amount, amount_deduct, "this is deducted amounts")
+    amount3 = int(amount2) + int(amount_deduct)
 
     seller_account.amount = amount3
 
@@ -239,11 +245,12 @@ def validate_refund(request):
     orderid = request.GET["orderid"]
     amount = request.GET["amount"]
     seller = request.GET["seller"]
+    item = request.GET["item"]
     message = request.GET["select"]
     other = request.GET["other"]
     mode = request.GET["mode"]
     data = {}
-
+    print(item, "item")
     message1 = ''
 
     if other:
@@ -258,6 +265,8 @@ def validate_refund(request):
         
         refund = Refund.objects.create(
             user = request.user,
+            item = item,
+            seller = seller,
             amount = amount,
             reason = message1,
             orderid = orderid,

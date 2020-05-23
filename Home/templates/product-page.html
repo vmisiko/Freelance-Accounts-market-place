@@ -10,6 +10,7 @@
 
 </head>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css'%} " rel="stylesheet">
     <!-- Material Design Bootstrap -->
@@ -38,7 +39,7 @@
               
               <!--Card image-->
               <div class="view view-cascade overlay">
-                  <img  class="card-img-top" src="{{ object.diplay_pic.url }}" alt="picture not available">
+                  <img  class="card-img-top" src="{{ object.diplay_pic.url }}" alt="picture not available" style="height: 300px;" >
                   
                   <a href="#!">
                     <div class="mask rgba-white-slight"></div>
@@ -83,9 +84,6 @@
 
                 <h5><i class="fas fa-link"></i> Reffer people to your product via this Link </h5> 
                
-
-                
-                    
                    <input type="text" value="{{ request.build_absolute_uri }}" id="teks">
                     
 
@@ -153,13 +151,13 @@
 
             </form> --> 
 
-            <a  href = " {{  object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p" >Add to cart
+            <a  href = " {{  object.get_add_to_cart_url }}" class="btn btn-primary  " >Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
             </a>
             
-              <a  href = " {{  object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p" >Remove From cart
+              <!-- <a  href = " {{  object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p" >Remove From cart
             
-                </a>
+                </a> -->
             
             {% if request.user == object.created_by %}
 
@@ -170,11 +168,17 @@
               
               {% endif %}
 
-              <hr class="mt-5">
+              <hr class="mt-3">
               <i class="fas fa-phone-square-alt"></i> <h2 class=""> contacts</h2>
+              {% if  request.user.is_authenticated %}
               <h5 class=" mr-auto ml-auto dark-grey-text">
                 contact the owner: {{object.contact}}
               </h5>
+
+              {% else %}
+              <a href="/accounts/signup/"> <button class="btn btn-warning"> <i class="fas fa-phone-alt"></i> Call Seller </button></a>
+              {% endif %} 
+
           </div>
           <!--Content-->
 
@@ -194,7 +198,7 @@
 
           <h4 class="my-4 h4">Related Accounts to Check </h4>
 
-          <p>Like what you see? If no,t don't give up. We still have more in store perfectly tailored for you.
+          <p>Like what you see? If not, don't give up. We still have more in store perfectly tailored for you.
             click any of the below products to be directed back to more accounts to select from.
           </p>
 

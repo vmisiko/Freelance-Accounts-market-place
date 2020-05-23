@@ -15,7 +15,7 @@ from rest_framework.permissions import AllowAny
 from .serializers import LNMOnlineSerializer,C2bSerializer, B2cTransaction
 from . models  import LNMOnline,C2bTransaction, B2cTransaction
 from Home.models import OrderItem, Order
-from dashboard.models import AccountsModel
+from dashboard.models import AccountsModel, Conversion
 from django.db.models.signals import post_save
 
 
@@ -99,7 +99,9 @@ def view_for_mpesa(request):
     return render(request, "mpesatemp/payment_via_mpesa.html", context)
 
 def view_for_mpesa2(request):
-
+    conversion = Conversion.objects.all()
+    rate = [con.rate for con in conversion][0]
+    print(rate)
     order1 = Order.objects.filter(user =request.user,  ordered = False)
     if order1:
         order = Order.objects.get(user =request.user,  ordered = False)
@@ -107,7 +109,8 @@ def view_for_mpesa2(request):
         form2 = Mpesa_c2b_checkout()
 
         amount1 = order.get_total()
-        amount = int(amount1) *100
+        amount = int(amount1) *int(rate)
+        # amount = int(amount1) * 100 
         
             
         context = {"form": form,

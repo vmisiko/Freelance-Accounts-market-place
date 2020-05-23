@@ -5,7 +5,7 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from django.dispatch import receiver
 from django.db.models import signals
 from MpesaApp.models import LNMOnline
-from .models import AccountsModel
+from .models import AccountsModel, Conversion
 from allauth.account.signals import user_signed_up
 from .models import AccountsModel
 from Home.models import Order
@@ -30,11 +30,15 @@ def save_Account(sender, **kwargs):
 def send_lnm_signal(sender, instance, **kwargs):
 
     phone_number = instance.PhoneNumber
-    amount1 = instance.Amount
+    amount0 = instance.Amount
+    conversion = Conversion.objects.all()
+    rate = [con.rate for con in conversion][0]
+    print(rate, "Mpesa rate in signals working")
+    amount1 = int(amount0)/int(rate)
+    print(amount1, "rate in dollars")
 
     if AccountsModel.objects.filter(phone_number= phone_number).exists():
         account = AccountsModel.objects.get(phone_number= phone_number)
-        
         user = account.user
         amount2 = account.amount
         amount = int(amount1) + int(amount2)

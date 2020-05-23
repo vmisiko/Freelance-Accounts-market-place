@@ -69,7 +69,7 @@
                       {% for ord in  order %}
                       
                           <tr class="table-info">
-                            <th scope="row">1</th>
+                            <th scope="row"> {{forloop.counter}} </th>
                             <td>{{ ord.id }}</td>
                             <td> 
                               {% for obj in ord.items.all %}
@@ -208,9 +208,11 @@ aria-hidden="true">
 
         Window.data = {
             "id": $(cols[0]).text(),
-            "amount":$(cols[1]).text(),
-            "seller":$(cols[2]).text(),       
+            "item":$(cols[1]).text(),
+            "amount":$(cols[2]).text(),
+            "seller":$(cols[3]).text(),       
         };
+        
         data = Window.data
         $("#confirmationMessage").append("<p> I hereby confirm the release of payment of <strong> $ " +
         data.amount +"</strong> to <strong> " + data.seller + "</strong>  in accordance with this <a href='' class='green-text'> Terms and Conditions</a> </p>")
@@ -234,7 +236,6 @@ aria-hidden="true">
           dataType: 'json',
           success: function (data) {
 
-            
             if (data.message=="true") {
               
               $('#centralModalSuccess').modal('show');

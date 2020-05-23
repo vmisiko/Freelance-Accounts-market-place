@@ -8,7 +8,10 @@ urlpatterns = [
 
     path('', views.index.as_view(), name = "home"),
     path('home/', views.index.as_view(), name = "home"),
-    path('payment/', views.view_paypal, name = 'payment'),
+    path('transcribe/', views.TranscribingAccounts.as_view(), name = "transcribe"),
+    path('bid/', views.BiddingAccounts.as_view(), name = "bid"),
+    path('take/', views.TakeAccounts.as_view(), name = "take"),
+    path('payment/', views.view_paypal, name ='payment'),
     path('payment-done/', views.payment_done, name= 'payment-done'),
     path('payment-cancelled/', views.payment_canceled, name = 'payment-cancelled'),
     path('product/<int:pk>/', views.Product.as_view(), name = "product" ),

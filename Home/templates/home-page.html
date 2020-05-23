@@ -217,27 +217,9 @@
     <!--Main layout-->
   <main>
     <div id="carousel-example-1z" class="container">
-      <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-
-      <!--Navbar-->
-      <!-- <ul class="nav navbar-nav">
-        <li class="dropdown">
-        
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-             Notifs {% live_notify_badge %} 
-             
-             <span class="glyphicon glyphicon-user pull-right"></span>
-            </a>
-         <ul class="dropdown-menu">
-             </ul> 
-            </li>
-      </ul> -->
-      <!-- {% live_notify_list %} -->
-
-      
+     
       
     
-
       <form id="myform" method="GET" action="{% url 'Home:home' %}">
         {% csrf_token %}
         <input type="hidden" name="kall" value="kall" />
@@ -250,7 +232,7 @@
       <nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5">
         
         <!-- Navbar brand -->
-        <span class="navbar-brand">Categories:</span>
+        <span class="navbar-brand">Categories: </span>
 
         <!-- Collapse button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
@@ -269,13 +251,13 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="document.forms[1].submit();return false;">Transcribing Account</a>
+              <a class="nav-link" href="{% url 'Home:transcribe' %}">Transcribing Account</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="document.forms[2].submit();return false;"> Bidding Account </a>
+              <a class="nav-link" href="{% url 'Home:bid' %}"> Bidding Account </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="document.forms[3].submit();return false;"> Take Account </a>
+              <a class="nav-link" href="{% url 'Home:take' %}" > Take Account </a>
             </li>
 
           </ul>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import WithdrawPayouts, AccountsModel,Refund
+from .models import WithdrawPayouts, AccountsModel,Refund, Conversion
 from .tasks import mpesa_payout_task,paypal_payout_task
 
 # Register your models here.
@@ -45,4 +45,8 @@ class AccountsModelAdmin(admin.ModelAdmin):
 
 @admin.register(Refund)
 class RefundAdmin(admin.ModelAdmin):
-    list_display =["user", "orderid", "amount", "status","date", "mode","reason"]
+    list_display =["user", "orderid", "amount", "status","date", "mode","seller", "reason"]
+
+@admin.register(Conversion)
+class ConversionAdmin(admin.ModelAdmin):
+    list_display = ["rate", "date"]

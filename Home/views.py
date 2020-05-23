@@ -82,36 +82,53 @@ def view_paypal(request):
     
     return render(request, "payment.html", context)
 
+class TakeAccounts(generic.ListView):
+    model = Item
+    paginate_by = 6
+    template_name = "home-page.html"
+
+    def get_queryset(self):
+        qs =  super(TakeAccounts, self).get_queryset()
+
+        queryset = qs.filter(category="sw").order_by("-created_at")
+        print("index3 called")
+       
+        return queryset
+
+class BiddingAccounts(generic.ListView):
+    model = Item
+    paginate_by = 6
+    template_name = "home-page.html"
+
+    def get_queryset(self):
+        qs =  super(BiddingAccounts, self).get_queryset()
+
+        queryset = qs.filter(category="s").order_by("-created_at")
+        print("index3 called")
+       
+        return queryset
+
+class TranscribingAccounts(generic.ListView):
+    model = Item
+    paginate_by = 6
+    template_name = "home-page.html"
+
+    def get_queryset(self):
+        qs =  super(TranscribingAccounts, self).get_queryset()
+
+        queryset = qs.filter(category="OW").order_by("-created_at")
+        print("index2 called")
+       
+        return queryset
+
 class index(generic.ListView):
     model = Item
     paginate_by = 6
     template_name = "home-page.html"
 
     def get_queryset(self):
-        queryset =  super(index, self).get_queryset()
-
-        # notify.send(self.request.user, recipient=self.request.user, verb =" hey your first notification")
+        queryset =  super(index, self).get_queryset().order_by("-created_at")
        
-        if self.request.method == "GET" and self.request.GET:
-
-            kall = self.request.GET["kall"]
-            verb = self.request.GET["verb"]
-            bid = self.request.GET["bid"]
-            take = self.request.GET["take"]
-
-            if kall =="kall":
-                return queryset
-
-            if verb == "verb":
-                queryset = queryset.filter(category = "s")
-                return queryset
-            if bid == "bid":
-                queryset = queryset.filter(category = "sw")
-                return queryset
-            if take == "take":
-                queryset = queryset.filter(category = "OW")
-                return queryset
-
         return queryset
 
 
