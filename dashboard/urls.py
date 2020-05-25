@@ -14,5 +14,6 @@ urlpatterns = [
   path("refund/", views.RefundView.as_view(), name = "refund"),
   path("valid_refund/", views.validate_refund, name = "valid_refund"),
   path("notifications", views.order_notification, name ="order_notification"),
+  path("email/", views.email_template, name ="email")
 
 ]

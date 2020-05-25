@@ -3,12 +3,16 @@ from .models import WithdrawPayouts,Refund
 from .forms import PayoutForm
 from django.views import generic
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 from dashboard.models import AccountsModel
 from Home.models import Order, Item
 from django.views.decorators.csrf import csrf_exempt
 
 from django.db.models.signals import post_save
 import time
+from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 # from django.dispatch import receiver
 
 ord_notif ={}
@@ -45,16 +49,123 @@ def order_notification(request):
     for i in range(5):
         if "seller" in ord_notif:
             seller = ord_notif["seller"]
+            buyer = ord_notif["buyer"]
+            s= User.objects.get(username=seller)
+            b = User.objects.get(username=seller)
+            seller_email = s.email
+            buyer_email = b.email
+            ordered = ord_notif["ordered"]
+            released = ord_notif["released"]
+            refund = ord_notif["refund"]
+            order1 ={}
+            order2 = {}
             
-            print(f"yes available now {ord_notif['seller']}")
+            if ordered ==True and released==False and refund == False:
+
+                order1 = {
+
+                    "title" : "Your Item has been Ordered!!",
+                    "text" : f"Your product has been ordered by buyer {buyer}.Kindly visit your account to check for your orders and transactions "
+                }
+
+                order2 = {
+                
+                    "title" : "You have Ordered!!",
+                    "text" : f"Your have Ordered a product from Seller {seller}.Kindly visit your account to check for your orders and transactions "
+                }
+
+            elif ordered ==True and released==True and refund == False:
+                order1 = {
+
+                    "title" : "Your cash has been Released!!",
+                    "text" :  f"Your cash has been released by buyer {buyer}.Kindly visit your account to check your account balance, orders and transactions "
+                }
+
+                order2 = {
+                
+                    "title" : "Amount released!!",
+                    "text" : f"Your cash has been released to by seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
+                }
+            elif ordered==True and released==True and refund == True:
+
+                order1 = {
+
+                    "title" : "Order cancelled!!",
+                    "text" :  f"The order to your product has been cancelled by {buyer}.Kindly visit your account and email us immidiately if you have complains pertaining this action."
+                }
+
+                order2 = {
+                    
+                    "title" : "Order cancelled!!",
+                    "text" : f"Your have cancelled your order to by from {seller}. Kindly visit your account to check your account balance,orders and transactions"
+                }
+            else:
+                order1.clear()
+                order2.clear()
+
+
+            print(order1)
+            print(order2)
+
+            # subject = order1["title"]
+            # html_message = render_to_string('dashboard/email.html', {'order': order1})
+
+            # plain_message = strip_tags(html_message)
+
+            # from_email = 'victormisiko.vm@gmail.com'
+            # to = seller_email
+
+            # mail.send_mail(subject, plain_message, from_email, [to], fail_silently=False, html_message=html_message)
+
+            try:
+                subject2 = order2["title"]
+                html_message2 = render_to_string('dashboard/email.html', {'order': order2})
+
+                plain_message2 = strip_tags(html_message)
+
+                from_email2 = 'victormisiko.vm@gmail.com'
+                to2 = buyer_email 
+
+                subject = order1["title"]
+                html_message = render_to_string('dashboard/email.html', {'order': order1})
+
+                plain_message = strip_tags(html_message)
+
+                from_email = 'victormisiko.vm@gmail.com'
+                to = seller_email
+
+                mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+                mail.send_mail(subject2, plain_message2, from_email2, [to2],fail_silently=False, html_message=html_message2 )
+                order1.clear()
+                order2.clear()
+
+            except:
+                print( 'mail not sent')
+            
+            # try:
+            #     subject = order1["title"]
+            #     html_message = render_to_string('dashboard/email1.html', {'order': order2})
+
+            #     plain_message = strip_tags(html_message)
+
+            #     from_email = 'victormisiko.vm@gmail.com'
+            #     to = buyer_email
+
+            #     mail.send_mail(subject, plain_message, from_email, [to],fail_silently=False, html_message=html_message )
+            #     order2.clear()
+
+            # except:
+            #     print( 'mail not sent')
+
             if ord_notif["seller"] == seller:
 
+
                 data = { "order_id": ord_notif["order_id"],
-                        "buyer" : ord_notif["buyer"],
-                        "ordered": ord_notif["ordered"],
-                        "seller":ord_notif["seller"],
-                        "released":ord_notif["released"],
-                        "refund":ord_notif["refund"],
+                        "buyer" : buyer,
+                        "ordered": ordered,
+                        "seller":seller,
+                        "released":released,
+                        "refund":refund,
                         }
 
                 print(data, "this is data")
@@ -284,6 +395,19 @@ def validate_refund(request):
         print("failure")
     return JsonResponse(data)
 
+def email_template(request):
+
+
+    order = {
+        "title": " Your Product  has been Ordered!!",
+        "text": "Kindly visit your account to check for your orders and transactions "
+    }
+
+    context = {
+        "order": order
+    }
+
+    return render(request, "dashboard/email.html", context)
     
 
 

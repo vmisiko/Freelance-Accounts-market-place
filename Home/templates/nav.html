@@ -55,16 +55,7 @@
 
               
               {% notifications_unread as unread_count %}
-              <li class="nav-item">
-                <a class="nav-link waves-effect">
-                  <i class="fas fa-bell white-text"></i>
-                    <Sup>
-                      <span class="badge success-color badge-pill z-depth-1 mr-1 animated heartBeat infinite">{{unread_count}}</span>
-                    </Sup>
-                  </i>
-                </a>
-              </li>
-
+     
              
                 <li class="nav-item">
                   <a class="nav-link waves-effect " href = "{% url "Home:order-summary" %}">
@@ -79,9 +70,6 @@
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle border border-light rounded waves-effect  waves-light" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-user-check"></i>  {{request.user}}
-                      <Sup>
-                        <span class="badge success-color badge-pill z-depth-1 mr-1 animated heartBeat infinite">{{unread_count}}</span>
-                      </Sup>
                     </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
@@ -125,12 +113,6 @@
                 </ul>
           </div>
         </nav>
-
-        <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-        <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
-        <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-        <script  src="{% static 'js/bootstrap.min.js' %}"></script>
-
         <!-- <script>
   
           (function poll(){
