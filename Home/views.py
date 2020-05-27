@@ -324,12 +324,12 @@ def remove_single_item_from_cart(request, pk):
     return redirect("Home:order-summary" )
 
 
-class Sell_item(CreateView):
+class Sell_item(LoginRequiredMixin,CreateView):
     model = Item
     fields = '__all__'
     template_name = "sell_item.html"
 
-class Sell_item_Update(UpdateView):
+class Sell_item_Update(LoginRequiredMixin,UpdateView):
     model = Item
     fields = '__all__'
     template_name = "sell_item.html"
