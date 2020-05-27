@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% extends "base.html"%}
+{% load static %}
 
 
 <html lang="en">
@@ -45,11 +46,11 @@
         <div class="row">
 
        
-                <div class="card col-12">
+                <div class="card col-12 table-responsive">
 
                     
                    <!--Table-->
-                      <table class="table table-striped w-auto">
+                      <table class="table  table-striped w-auto">
 
                         <!--Table head-->
                         <thead>
@@ -198,7 +199,7 @@ aria-hidden="true">
 <!-- Central Modal Medium Success-->
 
 <hr class="my-5">
-
+<!-- <script  src="{% static 'js/bootstrap.bundle.js' %}"></script> -->
     <script>
 
       function releaseClicked(event) {

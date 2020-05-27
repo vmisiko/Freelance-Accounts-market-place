@@ -102,9 +102,23 @@
 
                 <tr>
 
-                  <td colspan = "5" '><b>
-                     <a href = "/" class = "btn btn-info" > continue shopping </a>
-                     <a href = "/checkout/" class = "btn btn-success" >Proceed to checkout </a>
+                  <td colspan = "5" '><b >
+                     <a href = "/" class = "btn btn-primary col-md-4" > continue shopping </a>
+                    <!-- select payment mode -->
+                     <div class="btn-group col-md-4">
+                      <button type="button" class="btn btn-success">Select payment Mode</button>
+                      <button type="button" class="btn btn-success dropdown-toggle px-3" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">---select---</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/mobile/lnm_payment/"> Mpesa </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/payment/"> Paypal </a>
+                      </div>
+                    </div>
 
                    </b> </td>
                 </tr>

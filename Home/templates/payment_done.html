@@ -22,13 +22,68 @@
   </head>
   <body>
     {% block content %}
-    <div class="mt-5 pt-5">
+    <div class=" container mt-5 pt-5">
 
-      <h1 class = 'mb-5 pb-5'>   payment was succssfull </h1>
+      <h1 class = 'mb-5 pb-5 text-muted'>   Payment was successful </h1>
 
     </div>
 
-    {% endblock %}
 
+      <!-- Central Modal Medium Success -->
+<div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-success" role="document">
+    <!--Content-->
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header">
+        <p class="heading lead"> Payment Success </p>
+  
+        <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+          <span aria-hidden="true" class="white-text">&times;</span>
+        </button>
+      </div>
+  
+      <!--Body-->
+      <div class="modal-body">
+        <div class="text-center">
+          <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s"></i>
+          <P> Thank you for working with Freelancing Accounts. Your order is now complete and the money is still in your account.Take 
+            your time to
+             go through the account and if satisfied, You can release payment to the seller. Incase you are not satisfied with 
+             the account, you can ask for a Refund within a span of 3 days. If no complain is registered after those 3 days, the money will be transfered to the seller. Good luck with your new Account.
+
+             </P>
+          
+        </div>
+      </div>
+  
+      <!--Footer-->
+      <div class="modal-footer justify-content-center">
+       
+        <a type="button" class="btn btn-outline-success waves-effect" onclick="location.reload(true);" data-dismiss="modal">Dismiss</a>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+  </div>
+  <!-- Central Modal Medium Success-->
+  
+
+{% endblock %}
+
+{% block scripts%}
+<script>
+
+  $(document).ready( function(){
+
+    setTimeout(function(){
+      $("#centralModalSuccess").modal("show");
+    }, 2000);
+  });
+
+
+</script>
+{% endblock %}
+  
   </body>
 </html>

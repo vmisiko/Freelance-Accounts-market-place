@@ -73,9 +73,11 @@ class Item(models.Model):
         })
     
     def get_add_to_cart_url(self):
+
         return reverse("Home:add_to_cart", kwargs ={
             'pk': self.pk
         })
+
     def get_discount_price(self):
         discount = self.price - self.discountprice
         return discount
@@ -130,8 +132,11 @@ class OrderItem(models.Model):
 
     def get_final_price(self):
         if self.item.discountprice:
-            return self.get_total_discount_item_price()
-        return self.get_total_item_price
+            results= self.get_total_discount_item_price()
+            return results
+        else:
+            results = self.get_total_item_price
+            return results
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE)
@@ -154,6 +159,9 @@ class Order(models.Model):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
+
+            # print(od1)
+            # total += float(od1)
         return total
 
 class BillingAddress(models.Model):
