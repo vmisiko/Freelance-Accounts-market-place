@@ -112,7 +112,7 @@ def order_notification(request):
 
             # plain_message = strip_tags(html_message)
 
-            # from_email = 'victormisiko.vm@gmail.com'
+            # from_email = 'noreply@freelancingaccounts.com'
             # to = seller_email
 
             # mail.send_mail(subject, plain_message, from_email, [to], fail_silently=False, html_message=html_message)
@@ -123,7 +123,7 @@ def order_notification(request):
 
                 plain_message2 = strip_tags(html_message)
 
-                from_email2 = 'victormisiko.vm@gmail.com'
+                from_email2 = 'noreply@freelancingaccounts.com'
                 to2 = buyer_email 
 
                 subject = order1["title"]
@@ -131,7 +131,7 @@ def order_notification(request):
 
                 plain_message = strip_tags(html_message)
 
-                from_email = 'victormisiko.vm@gmail.com'
+                from_email = 'noreply@freelancingaccounts.com'
                 to = seller_email
 
                 mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
@@ -142,20 +142,20 @@ def order_notification(request):
             except:
                 print( 'mail not sent')
             
-            # try:
-            #     subject = order1["title"]
-            #     html_message = render_to_string('dashboard/email1.html', {'order': order2})
+            try:
+                subject = order1["title"]
+                html_message = render_to_string('dashboard/email1.html', {'order': order2})
 
-            #     plain_message = strip_tags(html_message)
+                plain_message = strip_tags(html_message)
 
-            #     from_email = 'victormisiko.vm@gmail.com'
-            #     to = buyer_email
+                from_email = 'victormisiko.vm@gmail.com'
+                to = buyer_email
 
-            #     mail.send_mail(subject, plain_message, from_email, [to],fail_silently=False, html_message=html_message )
-            #     order2.clear()
+                mail.send_mail(subject, plain_message, from_email, [to],fail_silently=False, html_message=html_message )
+                order2.clear()
 
-            # except:
-            #     print( 'mail not sent')
+            except:
+                print( 'mail not sent')
 
             if ord_notif["seller"] == seller:
 

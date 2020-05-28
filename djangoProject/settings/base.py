@@ -215,12 +215,8 @@ CELERY_BEAT_SCHEDULE = {
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'victormisiko.vm@gmail.com'
-EMAIL_HOST_PASSWORD = 'halleluhya'
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_HOST_USER = 'noreply@freelancingaccounts.com'
+EMAIL_HOST_PASSWORD = 'vmisiko1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-
-
-

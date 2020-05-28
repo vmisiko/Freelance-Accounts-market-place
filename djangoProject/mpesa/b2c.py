@@ -27,10 +27,10 @@ def b2c_payments(amount, phone_number):
         "Amount": str(amount),
         "PartyA": keys.short_code,
         "PartyB": keys.mssisdn,
-        "Remarks": "Congratulations for working in Divine ventures, keep it up.",
-        "QueueTimeOutURL": "https://e919cddc.ngrok.io/mobile/b2c_callback/",
-        "ResultURL": "https://e919cddc.ngrok.io/mobile/b2c_callback/",
-        "Occasion": "Krismas"
+        "Remarks": "Thank You for working with freelancing accounts",
+        "QueueTimeOutURL": "http:/freelancingaccounts.com/mobile/b2c_callback/",
+        "ResultURL": "http://freelancingaccounts.com/mobile/b2c_callback/",
+        "Occasion": "payday"
     }
     
     response = requests.post(api_url, json = request, headers=headers)
