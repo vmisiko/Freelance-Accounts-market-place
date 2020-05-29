@@ -159,6 +159,11 @@ AUTHENTICATION_BACKENDS = (
 
 )
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# ACCOUNT_AUTHENTICATION_METHOD = "username"|"email"|"username_email"
+
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -202,9 +207,10 @@ CELERY_BEAT_SCHEDULE = {
 #email backend
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_HOST_USER = 'noreply@freelancingaccounts.com'
+EMAIL_HOST_USER = 'admin@freelancingaccounts.com'
 EMAIL_HOST_PASSWORD = 'vmisiko1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

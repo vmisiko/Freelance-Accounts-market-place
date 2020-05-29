@@ -148,6 +148,7 @@
             :body-text-variant="bodyTextVariant"
             :footer-bg-variant="footerBgVariant"
             :footer-text-variant="footerTextVariant"
+            @ok="handleOk"
  
             >
 
@@ -181,7 +182,14 @@
                 footerBgVariant: 'success',
                 footerTextVariant: 'light'
             }
+
+           
         },
+        methods: {
+          handleOk () {
+            location.reload();
+          }
+        }
 
         
 

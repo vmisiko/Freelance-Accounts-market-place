@@ -13,6 +13,7 @@ import time
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.conf import settings
 # from django.dispatch import receiver
 
 ord_notif ={}
@@ -59,6 +60,7 @@ def order_notification(request):
             refund = ord_notif["refund"]
             order1 ={}
             order2 = {}
+            email_host = settings.EMAIL_HOST_USER
             
             if ordered ==True and released==False and refund == False:
 
@@ -123,15 +125,16 @@ def order_notification(request):
 
                 plain_message2 = strip_tags(html_message)
 
-                from_email2 = 'noreply@freelancingaccounts.com'
+                from_email2 = email_host
                 to2 = buyer_email 
+                print(subject2, from_email2, "print email 2")
 
                 subject = order1["title"]
                 html_message = render_to_string('dashboard/email.html', {'order': order1})
 
                 plain_message = strip_tags(html_message)
 
-                from_email = 'noreply@freelancingaccounts.com'
+                from_email = email_host
                 to = seller_email
 
                 mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
