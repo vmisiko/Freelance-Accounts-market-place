@@ -9,11 +9,16 @@ sender_batch_id =''.join(
         
     )
 
+# paypalrestsdk.configure({
+    
+#   "mode": "sandbox", # sandbox or live
+#   "client_id": "AQleHmqLc9f9njvGRJPACaEfqMew9SErmJmpT1G4nsjKa5zpNvVeZFlABB-zmn95oztxl9KqbR4Ekvm0",
+#   "client_secret": "EPLTC2LWgRoMPcOaQqH-iSvxxg6QZMva5aeIYuTa7Z-2pHMyz93os4yCefCf5WyrfIJ7tJrnyu-PETbD" })
 paypalrestsdk.configure({
     
-  "mode": "sandbox", # sandbox or live
-  "client_id": "AQleHmqLc9f9njvGRJPACaEfqMew9SErmJmpT1G4nsjKa5zpNvVeZFlABB-zmn95oztxl9KqbR4Ekvm0",
-  "client_secret": "EPLTC2LWgRoMPcOaQqH-iSvxxg6QZMva5aeIYuTa7Z-2pHMyz93os4yCefCf5WyrfIJ7tJrnyu-PETbD" })
+  "mode": "live", # sandbox or live
+  "client_id": "AdLKr0lXh2gM0lLrATlSUX_y-hmBdC8BVyGXa8foNItyrfQgiXcu9GX6iJXsovOqMumvpL8Jzth02E5o",
+  "client_secret": "EJytRi9KmxPUad2ZsumW7l0Ttgg0T_UVuxOw-fCPXyV6gPc_nyi6U7TUuEJa1Dibwdl93e2q7PonTdlk" })
 
 def paypal_payout_release(items):
     items = items

@@ -120,7 +120,9 @@ class OrderItem(models.Model):
         return discounted_price
 
     def get_total_item_price(self):
-        return self.quantity * self.item.price
+        price =int(self.quantity) * int(self.item.price)
+        print(price, "price of get total item price")
+        return price
 
     def get_total_discount_item_price(self):
         discounted_price = self.item.price - self.item.discountprice
@@ -131,12 +133,17 @@ class OrderItem(models.Model):
         return self.get_total_item_price() - self.get_total_discount_item_price()
 
     def get_final_price(self):
+
         if self.item.discountprice:
+
             results= self.get_total_discount_item_price()
             return results
+            print(results, "get final price")
         else:
-            results = self.get_total_item_price
+            results = self.get_total_item_price()
+            print(results, "get final price")
             return results
+
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE)
@@ -160,7 +167,7 @@ class Order(models.Model):
         for order_item in self.items.all():
             total += order_item.get_final_price()
 
-            # print(od1)
+            # print(total)
             # total += float(od1)
         return total
 

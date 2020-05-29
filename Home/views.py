@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.conf import settings
 from . models import Products,Item, OrderItem, Order,BillingAddress
 from django.views import generic
 from django.utils import timezone
@@ -59,11 +60,13 @@ def view_paypal(request):
     order = Order.objects.get(user =request.user,  ordered = False)
     print(order.id, "this is the cool order number")
     host = request.get_host()
+    paypal_email = settings.PAYPAL_RECIEVER_EMAIL
     # orderitem = OrderItem.objects.get(user =request.user,  ordered = False)
     # What you want the button to do.
+    print(paypal_email)
     paypal_dict = {
 
-        "business": "misikovictor123@gmail.com",
+        "business": paypal_email,
         "amount": str(order.get_total()),
         "item_name": 'Order {}'.format(order.id),
         "invoice": sender_batch_id,

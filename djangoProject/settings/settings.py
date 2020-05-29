@@ -171,9 +171,10 @@ SITE_ID = 1
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+
 # paypal  Configuration
 PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
-PAYPAL_TEST = True
+PAYPAL_TEST =False
 
 
 REST_FRAMEWORK = {
