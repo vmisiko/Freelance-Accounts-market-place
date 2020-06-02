@@ -170,6 +170,9 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 
 )
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'
@@ -180,7 +183,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # paypal  Configuration
 PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
-PAYPAL_TEST = True
+PAYPAL_TEST = False
 
 
 REST_FRAMEWORK = {
@@ -212,6 +215,7 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 #email backend
+DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

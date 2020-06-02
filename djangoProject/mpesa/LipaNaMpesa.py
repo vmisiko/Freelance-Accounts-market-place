@@ -18,6 +18,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     account = AccountReference  
     callbackurl = callbackurl
     formated_time = formatted_time()
+    amount= amount
 
     # print(formated_time, " this is formatted time")
 
@@ -31,6 +32,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     
     access_token = my_access_token
     api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    # api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     headers = { "Authorization": "Bearer %s" % access_token }
 
     request = {
@@ -38,14 +40,14 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
         "BusinessShortCode": keys.bussiness_shortcode,
         "Password": decoded_password,
         "Timestamp": formated_time,
-        "TransactionType": "CustomerPayBillOnline",
+        "TransactionType": "CustomerBuyGoodsOnline",
         "Amount": "1",
         "PartyA": phone,
         "PartyB": keys.bussiness_shortcode,
         "PhoneNumber": phone,
         "CallBackURL": callbackurl,
         "AccountReference": account,
-        "TransactionDesc": "pay for fees",
+        "TransactionDesc": "Buy Freelancing account Account",
 
       }
       

@@ -161,7 +161,7 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # ACCOUNT_AUTHENTICATION_METHOD = "username"|"email"|"username_email"
 
 LOGIN_REDIRECT_URL = '/home/'
@@ -177,6 +177,7 @@ PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
 PAYPAL_TEST =False
 
 
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -184,6 +185,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
+
 
 ### mpesa Payment
 # celery things

@@ -7,6 +7,7 @@ def register_url():
 
     access_token = generate_access_token()
     api_url = "http://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl"
+    # api_url = "http://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl"
     headers = {"Authorization": "Bearer %s" % access_token}
     request = { "ShortCode": keys.short_code,
         "ResponseType": "Completed",

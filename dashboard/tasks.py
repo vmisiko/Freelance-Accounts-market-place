@@ -98,6 +98,12 @@ def release_payment():
             amount1 = int(account_buyer.amount) - int(amount)
 
             order.released = True
+            for org in order.items.all():
+                item_id = org.item.id
+
+                item = Item.objects.get(id=item_id )
+                item.sold = True
+                item.save()
 
             order.save()
             print(F'{amount1}, is the buyers balance from {account_buyer.amount}')

@@ -86,7 +86,7 @@ def order_notification(request):
                 order2 = {
                 
                     "title" : "Amount released!!",
-                    "text" : f"Your cash has been released to by seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
+                    "text" : f"Your cash has been released to seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
                 }
             elif ordered==True and released==True and refund == True:
 
@@ -309,6 +309,14 @@ def validate_release(request):
     amount1 = int(account.amount) - int(amount)
 
     order.released = True
+
+    for org in order.items.all():
+        item_id = org.item.id
+
+        item = Item.objects.get(id=item_id )
+        item.sold = True
+        item.save()
+
 
     order.save()
 

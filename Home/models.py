@@ -62,6 +62,7 @@ class Item(models.Model):
     description = models.TextField()
     diplay_pic = models.ImageField(upload_to = "display_pics/%Y%m%d/", max_length =255 )
     contact = models.CharField(max_length=15 ,null = True,blank= True)
+    sold = models.BooleanField(default=False)
     # purchased = models.BooleanField(default=False)
 
     def __str__(self):

@@ -137,19 +137,19 @@
 
               {% endif %}
             </p>
+            {% if object.sold %}
+            <span class="badge info-color mr-1">Already Sold</span>
+
+            {% else %}
+            <span class="badge success-color mr-1">In stock</span>
+
+            {% endif %}
 
             <p class="lead font-weight-bold">Description</p>
 
             <p>{{ object.description }}</p>
 
-            <!-- <form class="d-flex justify-content-left">
-              Default input -->
-              <!-- <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
-              <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
-                <i class="fas fa-shopping-cart ml-1"></i>
-              </button>
-
-            </form> --> 
+            
 
             <a  href = " {{ object.get_add_to_cart_url }}" class="btn btn-primary  " >Add to cart
               <i class="fas fa-shopping-cart ml-1"></i>
