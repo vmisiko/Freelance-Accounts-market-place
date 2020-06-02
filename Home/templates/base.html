@@ -170,7 +170,7 @@
     {% endfor %}
 {% endif %}
 
-<div id="app-alert"  class=" container-fluid mt-5 pt-1 " >
+<div id="app-alert"  class=" container-fluid mt-5 pt-1 " style="display: none;" >
   <div id="notification" class="alert alert-primary alert-dismissible fade show mt-5" role="alert" v-cloak v-show="alert" >
         
        <P id=""> [[message]]</P>
@@ -206,6 +206,16 @@
 
 {% endblock %}
 
+<script>
+$(document).ready( function(){
+
+setTimeout(function(){
+  $("#app-alert").show()
+}, 1000);
+});
+
+
+</script>
 
 
 <script>

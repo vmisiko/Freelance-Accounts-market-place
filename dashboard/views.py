@@ -173,7 +173,7 @@ def order_notification(request):
 
                 print(data, "this is data")
 
-    time.sleep(1)
+    # time.sleep(1)
     ord_notif.clear()
     return JsonResponse(data)
 
