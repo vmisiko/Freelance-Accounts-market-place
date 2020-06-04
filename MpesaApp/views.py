@@ -16,6 +16,7 @@ from .serializers import LNMOnlineSerializer,C2bSerializer, B2cTransaction
 from . models  import LNMOnline,C2bTransaction, B2cTransaction
 from Home.models import OrderItem, Order
 from dashboard.models import AccountsModel, Conversion
+from MpesaApp.models import LNMOnline
 from django.db.models.signals import post_save
 
 
@@ -28,6 +29,8 @@ def lnm_signal(sender, instance, **kwargs):
 
     code_signal["phone"] = phone_number
     code_signal["amount"] = amount 
+    code_signal["instance_id"]= instance.id
+    print(code_signal)
 
 post_save.connect(lnm_signal, sender=LNMOnline)
 
@@ -68,7 +71,10 @@ def realtime_validate(request):
             order.ordered = True
             order.items.ordered = True
             order.save()
-            
+            instance_id = code_signal["instance_id"]
+            lnm = LNMOnline.objects.get(id = instance_id )
+            lnm.paid = True
+            lnm.save()
 
         else:
 
