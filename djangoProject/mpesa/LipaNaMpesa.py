@@ -14,25 +14,27 @@ from djangoProject.mpesa.utils import formatted_time
 
 
 def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
+    print("lnm, called")
     phone = phone_number
     account = AccountReference  
     callbackurl = callbackurl
     formated_time = formatted_time()
     amount= amount
 
-    # print(formated_time, " this is formatted time")
+    print(formated_time, " this is formatted time")
 
     decoded_password = generate_password(formated_time) 
     # print(decoded_password, " this is decoded password")
     
 
     my_access_token = generate_access_token()
-    # print(my_access_token, " this is my access token")
+    print(my_access_token, " this is my access token")
 
     
     access_token = my_access_token
-    api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-    # api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    # api_url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    api_url = keys.lnm_api_url
+
     headers = { "Authorization": "Bearer %s" % access_token }
 
     request = {
@@ -43,7 +45,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
         "TransactionType": "CustomerBuyGoodsOnline",
         "Amount": "1",
         "PartyA": phone,
-        "PartyB": keys.bussiness_shortcode,
+        "PartyB": keys.till,
         "PhoneNumber": phone,
         "CallBackURL": callbackurl,
         "AccountReference": account,

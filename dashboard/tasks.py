@@ -1,8 +1,9 @@
 import random
 import string
+import requests
 from celery import shared_task
 from .models import WithdrawPayouts, Conversion, AccountsModel
-from Home.models import Order
+from Home.models import Order,Item
 from djangoProject.mpesa.b2c import b2c_payments
 from . payout import paypal_payout_release
 from django.utils import timezone
@@ -125,7 +126,25 @@ def release_payment():
 
             print(" three days still not yet completed")
 
+@shared_task
+def exchange_rate():
+    api_url ="https://www.freeforexapi.com/api/live?pairs=USDKES"
+    r =requests.get(api_url)
+    json_data =r.json()
+    rate1 = json_data["rates"]["USDKES"]["rate"]
+    print(round(rate1), "this is exchange rate api")
+    rate = round(rate1)
+
+    conversion = Conversion.objects.all()
+    for con in conversion:
+        con.rate = int(rate)
+        con.save()
 
 
+    
+
+
+
+        
 
 

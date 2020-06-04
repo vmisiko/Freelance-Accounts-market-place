@@ -211,6 +211,12 @@ CELERY_BEAT_SCHEDULE = {
         # There are 4 ways we can handle time, read further 
        'schedule': 3600.0,
     },
+
+'exchange_rate': {
+       'task': 'dashboard.tasks.exchange_rate',
+        # There are 4 ways we can handle time, read further 
+       'schedule': 3600.0,
+    }, 
          
 }
 

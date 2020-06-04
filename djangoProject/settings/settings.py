@@ -100,6 +100,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'djangoproject',
+#         'USER': 'vmisiko',
+#         'PASSWORD': 'vmisiko1',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -146,6 +157,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "Home/media")
@@ -158,11 +170,9 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 
 )
-
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-# ACCOUNT_AUTHENTICATION_METHOD = "username"|"email"|"username_email"
 
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'
@@ -171,11 +181,9 @@ SITE_ID = 1
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-
 # paypal  Configuration
 PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
-PAYPAL_TEST =False
-
+PAYPAL_TEST = False
 
 
 REST_FRAMEWORK = {
@@ -185,7 +193,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     ]
 }
-
 
 ### mpesa Payment
 # celery things
@@ -204,17 +211,21 @@ CELERY_BEAT_SCHEDULE = {
         # There are 4 ways we can handle time, read further 
        'schedule': 3600.0,
     },
-         
+
+'exchange_rate': {
+       'task': 'dashboard.tasks.exchange_rate',
+        # There are 4 ways we can handle time, read further 
+       'schedule': 3600.0,
+    }, 
 }
 
 #email backend
+DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
 EMAIL_HOST_USER = 'admin@freelancingaccounts.com'
 EMAIL_HOST_PASSWORD = 'vmisiko1'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-

@@ -240,11 +240,12 @@ setTimeout(function(){
                   $('#notification','.alert').show();
                   data = response.data
                   console.log(data)
-                  var audio = new Audio('{% static "when.mp3" %}');
                   if (Object.keys(data).length === 0) {
                     console.log("empty")
                   }
                   else if  (data.refund == false) {
+                    var audio = new Audio('{% static "when.mp3" %}');
+
                       this.alert = !this.alert
                       if (data.ordered ==true  && data.released == false) {
                         this.message=data.buyer + "'s order is complete. Check your Orders and Transactions";
