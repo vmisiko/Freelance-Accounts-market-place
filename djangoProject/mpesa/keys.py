@@ -15,7 +15,7 @@
 # till = "174379"
 
 
-# live
+# live lnm
 lnm_api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
 access_token_api_url ="https://api.safaricom.co.ke/oauth/v1/generate"
 bussiness_shortcode = "7116707"
@@ -30,3 +30,11 @@ InitiatorName = "apiop48"
 till = "5173059"
 securityCridentials = "Safaricom2999#"
 password = ""
+
+
+# live b2c 
+B2C_URL = "https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest"
+b2c_shortcode = "3014967"
+b2c_consumer_key = "CktPHRGyBpV3oKTvNnGSJryigOQd4yuM"
+b2c_consumer_secret = "DjGBGA15AwYSdTc1"
+b2c_sec_cred = "Y6gI0m25rkt98HyqjzyPUrjnmot+iXwPGYjWysbDz+7EO3kHRTnidbZ0ZtrCXYLFdt7tz1bwcd1sPVMrCkSQwOHp1BVor+/c4kUO42LXG0ZOXu5Mhgrfm/WWPZsgnYEGVMIoQJB34EcPCCkaeV6ZS3Nhz4yaJWFj9RuuxvHmMHEEy4+cChoz+MKpMXFvMs/tG1etG5WHW4vQtSMNh9iNw3W3xaaxp/uu3P3MHdKJhmb8YH13BAe7UqnDurBNb8EmhiMpcYokCi853bNrIYs29hjH2UPBj6jVkmKBI8xGCjXkKX23/M4FOORyYLGJB/ySm2WS7WBX33VEBnyxQfZhPg=="

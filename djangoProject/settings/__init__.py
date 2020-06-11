@@ -1,2 +1,3 @@
-from .base import *
-#from .settings import *
+#from .base import *
+from .settings import *
+
