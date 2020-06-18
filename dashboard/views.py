@@ -219,19 +219,45 @@ def validate_widthrawal(request):
     if form.is_valid():
         first_name = form.cleaned_data.get("first_name")
         last_name = form.cleaned_data.get("last_name")
-        amount = form.cleaned_data.get("amount")
+        amount = form.cleaned_data.get("amount_requested")
         phone_number = form.cleaned_data.get("phone_number")
         payment_mode = form.cleaned_data.get("payment_mode")
         email = form.cleaned_data.get("email")
         
+        amount_dispensed= 0
+        data1 = {}
+       
+        # data["percentage"] = "2"
+        # data['span'] = span
+        # data['gross'] = amount
+        # data["tcharges"]= dp
+        # data["net"] = amount_dispensed
 
-        
+        dp = 0
+        percentage = 0
         if int(amount) <= int(amount1):
+
+            if payment_mode == "M":
+                dp = 0.01*int(amount)
+                amount_dispensed = amount - dp
+                percentage = 0.01
+            else:
+                dp = 0.02*int(amount)
+                amount_dispensed = amount - dp
+                percentage = 0.02
+            
+            data1 = {
+                "percentage":percentage,
+                "tcharges":dp,
+                "gross": amount,
+                "net":amount_dispensed,
+            }
 
             payout = WithdrawPayouts.objects.create(
                 user = request.user,
                 last_name = last_name,
-                amount = amount,
+                amount_requested = amount,
+                amount_dispensed = amount_dispensed,
                 phone_number = phone_number,
                 payment_mode = payment_mode,
                 email = email,
@@ -243,6 +269,7 @@ def validate_widthrawal(request):
             account.amount = int(amount1) - int(amount)
             account.save()
             data["message"] =  "Withdrawal successful, your money is pending awaiting release"
+            data["data1"] = data1
         else:
 
             data["message"] =  "Request declined, You requested more than you have in your account."

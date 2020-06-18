@@ -5,7 +5,7 @@ from .tasks import mpesa_payout_task,paypal_payout_task
 # Register your models here.
 
 class WithdrawPayoutsAdmin(admin.ModelAdmin):
-    list_display = ["user", "first_name" ,"phone_number","amount","date","payment_mode","status",]
+    list_display = ["user", "first_name" ,"phone_number","amount_requested","amount_dispensed","date","payment_mode","status",]
 
     actions = ["apply_payout", "mpesa_payout"]
 

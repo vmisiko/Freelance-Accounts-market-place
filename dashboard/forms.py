@@ -6,6 +6,6 @@ from .models import WithdrawPayouts
 class PayoutForm(ModelForm):
     class Meta:
         model = WithdrawPayouts
-        exclude = ["user","date","status"]
+        exclude = ["user","date","status", "amount_dispensed"]
 
         

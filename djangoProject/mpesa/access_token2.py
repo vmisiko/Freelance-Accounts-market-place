@@ -19,4 +19,3 @@ def generate_access_token_2():
     print(my_access_token)
     return my_access_token
 
-generate_access_token_2()

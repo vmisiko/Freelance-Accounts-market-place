@@ -2,10 +2,17 @@ from django.contrib import admin
 from .models import Item , OrderItem,Order, BillingAddress
 
 # admin.site.register(Products)
-admin.site.register(Item)
+
 
 admin.site.register(BillingAddress)
-
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ["created_by",
+                    "created_at",
+                    "title",
+                    "price",
+                    "sold",
+                 ]
+admin.site.register(Item, ItemAdmin)
 
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ["user",

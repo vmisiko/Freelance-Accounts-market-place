@@ -24,13 +24,14 @@ def mpesa_payout_task(pk_model):
         
         for q in qs:
             phone_number = str(q.phone_number)
-            amount1 = q.amount
+            amount1 = q.amount_dispensed
             phone = phone_number.split("+")[1]
 
             # convert to kES
             conversion = Conversion.objects.all()
-            rate = [con.rate for con in conversion][0]
-            amount = int(amount1)* int(rate)
+            rate1 = [con.rate for con in conversion][0]
+            rate = int(rate) - 2 
+            amount = int(amount1)*int(rate)
 
             print(phone)
             # b2c_payments(amount,phone)
@@ -60,11 +61,11 @@ def paypal_payout_task(pk_model):
             payout = {
                 "recipient_type": "EMAIL",
                 "amount": {
-                    "value": q.amount,
+                    "value": q.amount_dispensed,
                     "currency": "USD"
                 },
                 "receiver": q.email,
-                "note": "congratulations and thank you for working with freelancing Accounts, keep up the spirit.",
+                "note": "Congratulations and thank you for working with freelancing Accounts, keep up the spirit.",
                 "sender_item_id": sender_batch_id,
             }
             items.append(payout)

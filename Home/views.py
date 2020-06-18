@@ -332,6 +332,16 @@ class Sell_item(LoginRequiredMixin,CreateView):
     fields = '__all__'
     template_name = "sell_item.html"
 
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        obj.save()        
+        return redirect(obj.get_absolute_url())
+    
+
+
+    
+
 class Sell_item_Update(LoginRequiredMixin,UpdateView):
     model = Item
     fields = '__all__'
