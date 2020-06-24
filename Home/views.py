@@ -31,11 +31,6 @@ sender_batch_id =''.join(
 
 # Create your views here
 
-class SaleAccountView(CreateView):
-    template_name = 'sale_account.html'
-    form_class = SaleAccountForm
-    success_message = 'Success: Book was created.'
-    # success_url = reverse_lazy('home')
 
    
 @csrf_exempt

@@ -206,7 +206,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
- 'send-summary-every-hour': {
+ 'release_payment': {
        'task': 'dashboard.tasks.release_payment',
         # There are 4 ways we can handle time, read further 
        'schedule': 3600.0,

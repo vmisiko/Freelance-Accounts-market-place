@@ -43,7 +43,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
         "Password": decoded_password,
         "Timestamp": formated_time,
         "TransactionType": "CustomerBuyGoodsOnline",
-        "Amount": "1",
+        "Amount": str(amount),
         "PartyA": phone,
         "PartyB": keys.till,
         "PhoneNumber": phone,
@@ -59,4 +59,3 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
 
     return response.text
 
-# lipa_na_mpesa(phone_number = "0721649416", amount = "23", AccountReference = "1234556")
