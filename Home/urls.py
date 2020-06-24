@@ -22,7 +22,7 @@ urlpatterns = [
     path('remove_item_from_cart/<int:pk>/', views.remove_single_item_from_cart, name = 'remove_item_from_cart'),
     path('sell-account/', views.Sell_item.as_view(), name= "sell_account"),
     path('edit-account/<int:pk>/', views.Sell_item_Update.as_view(), name= "edit_account"),
-    
+    path('sale_account/', views.SaleAccountView.as_view(), name='sale_account'),
    
 ]
 
