@@ -19,7 +19,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     account = AccountReference  
     callbackurl = callbackurl
     formated_time = formatted_time()
-    amount= amount
+    amount= round(int(amount))
 
     print(formated_time, " this is formatted time")
 

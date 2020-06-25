@@ -1,12 +1,17 @@
 import random
 import string
 import requests
+from django.conf import settings
 from celery import shared_task
-from .models import WithdrawPayouts, Conversion, AccountsModel
+from .models import WithdrawPayouts, Conversion, AccountsModel, Email_notifications
 from Home.models import Order,Item
 from djangoProject.mpesa.b2c import b2c_payments
 from . payout import paypal_payout_release
 from django.utils import timezone
+from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 sender_batch_id =''.join(
     random.choice(string.ascii_uppercase) for i in range(12)
@@ -141,6 +146,41 @@ def exchange_rate():
         con.rate = int(rate)
         con.save()
 
+@shared_task
+def send_email_notifications():
+
+    email_notif = Email_notifications.objects.filter(status= False)
+    email_host = settings.EMAIL_HOST_USER
+    for em in email_notif:
+
+        subject = em.title 
+        order = {
+            "title": em.title,
+            "text" : em.message
+        }
+        html_message = render_to_string('dashboard/email.html', {'order': order})
+
+        plain_message = strip_tags(html_message)
+
+        from_email = email_host
+        to = em.seller_email
+
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+        em.status = True
+        em.save()
+
+        # try:
+
+        #     mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+        #     em.status = True
+        #     em.save()
+
+        # except:
+
+        #     print("mail not sent")
+
+        
+        
 
     
 

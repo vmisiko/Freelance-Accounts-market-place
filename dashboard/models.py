@@ -62,3 +62,13 @@ class Paypal_callbacktb(models.Model):
     currency = models.CharField(max_length = 20,blank = True,null = True)
     fees = models.FloatField(default = 0.0)
     payments = models.IntegerField(default = 0)
+
+class Email_notifications(models.Model):
+    seller = models.CharField(max_length=50, null=True, blank=True)
+    buyer =  models.CharField(max_length=50, null=True, blank=True)
+    title =  models.CharField(max_length=200, null=True, blank=True)
+    message =  models.CharField(max_length=500, null=True, blank=True)
+    seller_email = models.EmailField(max_length=100,null=True, blank=True)
+    buyer_email = models.EmailField(max_length=100,null=True, blank=True)
+    status =models.BooleanField(default=False)
+    date =models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import WithdrawPayouts, AccountsModel,Refund, Conversion
-from .tasks import mpesa_payout_task,paypal_payout_task
+from .models import WithdrawPayouts, AccountsModel,Refund, Conversion, Email_notifications
+from .tasks import mpesa_payout_task,paypal_payout_task, send_email_notifications
 
 # Register your models here.
 
@@ -69,3 +69,18 @@ class Paypal_callbacktbAdmin(admin.ModelAdmin):
   
 
 admin.site.register(Paypal_callbacktb, Paypal_callbacktbAdmin)
+
+class Email_notifcationAdmin(admin.ModelAdmin):
+    list_display = ("seller",
+                    "buyer",
+                    "title",
+                    "status",
+                    "date")
+
+    actions = ["send_mails"]
+
+    def send_mails(self, request, queryset):
+        send_email_notifications.delay()
+
+
+admin.site.register(Email_notifications, Email_notifcationAdmin)
