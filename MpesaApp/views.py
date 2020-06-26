@@ -281,20 +281,23 @@ class LNMCallbackUrl(CreateAPIView):
         transaction_datetime = datetime.strptime(str_transaction_date,"%Y%m%d%H%M%S")
         print(transaction_datetime) 
 
-        transaction = LNMOnline.objects.create(
-            MerchantRequestID  = merchant_request_id,
-            CheckoutRequestID = checkout_request_id,
-            ResultCode = result_code,
-            ResultDesc = result_description,
-            Amount = amount,
-            MpesaReceiptNumber = mpesa_reciept_number,
-            Balance = 0,
-            TranscationDate = transaction_datetime,
-            PhoneNumber = phone_number
-        )
-        
-        transaction.save() 
-        
+        if not LNMOnline.objects.filter(MpesaReceiptNumber=mpesa_reciept_number).exists():
+            transaction = LNMOnline.objects.create(
+                MerchantRequestID  = merchant_request_id,
+                CheckoutRequestID = checkout_request_id,
+                ResultCode = result_code,
+                ResultDesc = result_description,
+                Amount = amount,
+                MpesaReceiptNumber = mpesa_reciept_number,
+                Balance = 0,
+                TranscationDate = transaction_datetime,
+                PhoneNumber = phone_number
+            )
+            
+            transaction.save() 
+        else:
+            pass
+            
         data = {
              "result_code" :result_code ,
              "amount": amount
