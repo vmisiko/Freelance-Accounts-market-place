@@ -1,14 +1,15 @@
 from django.shortcuts import get_object_or_404
-from .models import AccountsModel
+from .models import AccountsModel, WithdrawPayouts
 from paypal.standard.models import ST_PP_COMPLETED
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.dispatch import receiver
 from django.db.models import signals
 from MpesaApp.models import LNMOnline
-from .models import AccountsModel, Conversion
 from allauth.account.signals import user_signed_up
 from .models import AccountsModel
 from Home.models import Order
+from django.core.mail import send_mail
+from django.conf import settings
 # from paypal.standard.ipn.signals import valid_ipn_received
 
 @receiver(user_signed_up)
@@ -21,10 +22,6 @@ def save_Account(sender, **kwargs):
         user = user
     )
     
-
-
-
-
 
 @receiver(signals.post_save, sender = LNMOnline)
 def send_lnm_signal(sender, instance, **kwargs):
@@ -54,9 +51,26 @@ def send_lnm_signal(sender, instance, **kwargs):
         print("Account with that phone number does not exist")
 
 
+@receiver(signals.post_save, sender = WithdrawPayouts)
+def withdraw_signal(sender, instance, **kwargs):
 
+    status = instance.status
+    user = instance.user
+    amount = instance.amount_dispensed
+    print(status, "signal status")
 
+    if not status:
+        subject = "Withdthrawal Payout requested!!"
+        message =f"user {user} has requested for a payout of USD:{amount}."
+        to ="victormisiko.vm@gmail.com"
+        email_host = settings.EMAIL_HOST_USER
 
+        send_mail(subject, message, email_host, [to])
+
+    else:
+        print("status is true")
+
+        pass
 
 
 

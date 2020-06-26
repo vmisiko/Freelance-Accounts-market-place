@@ -37,8 +37,8 @@ def mpesa_payout_task(pk_model):
             # convert to kES
             conversion = Conversion.objects.all()
             rate1 = [con.rate for con in conversion][0]
-            rate = int(rate) - 2 
-            amount = int(amount1)*int(rate)
+            rate = float(rate) - 2 
+            amount = float(amount1)*float(rate)
 
             print(phone)
             # b2c_payments(amount,phone)

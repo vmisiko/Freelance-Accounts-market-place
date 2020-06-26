@@ -219,6 +219,8 @@ CELERY_BEAT_SCHEDULE = {
     }, 
 }
 
+# ADMINS = [("Admin", "admin@freelancingaccounts.com")]
+
 #email backend
 DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
 

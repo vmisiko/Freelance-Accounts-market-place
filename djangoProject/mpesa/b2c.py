@@ -7,7 +7,7 @@ from djangoProject.mpesa.encode import generate_password
 
 def b2c_payments(amount, phone_number):
     formated_time = formatted_time()
-    amount = amount
+    amount = round(int(amount))
     phone_number = phone_number
    
 

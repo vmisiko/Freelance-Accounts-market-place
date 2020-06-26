@@ -18,6 +18,7 @@ from Home.models import OrderItem, Order
 from dashboard.models import AccountsModel, Conversion
 from MpesaApp.models import LNMOnline
 from django.db.models.signals import post_save
+from dashboard.models import Conversion
 
 
 code_signal = {}
@@ -115,9 +116,9 @@ def view_for_mpesa2(request):
         form2 = Mpesa_c2b_checkout()
 
         amount1 = order.get_total()
-        amount = int(amount1) *int(rate)
+        amount = float(amount1) *float(rate)
         # amount = int(amount1) * 100 
-        
+        # print(amount)
             
         context = {"form": form,
                     "order":  order,
@@ -149,7 +150,10 @@ def lnm_validate_post(request):
 
     order = Order.objects.get(user =request.user,  ordered = False)
     amount1 = order.get_total()
-    amount = int(amount1) *100
+    conversion = Conversion.objects.all()
+    rate = [con.rate for con in conversion][0]
+
+    amount = float(amount1) *float(rate)
     
 
     if phone_number:

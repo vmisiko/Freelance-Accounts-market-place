@@ -107,7 +107,8 @@ class Item(models.Model):
             mytuple = (str(houred), "hours")
             hours = " ".join(mytuple)
             return hours
-        
+
+
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE)
     item = models.ForeignKey(Item, on_delete = models.CASCADE)
@@ -121,8 +122,8 @@ class OrderItem(models.Model):
         return discounted_price
 
     def get_total_item_price(self):
-        price =int(self.quantity) * int(self.item.price)
-        print(price, "price of get total item price")
+        price = int(self.quantity) * float(self.item.price)
+        print(self.item.price, self.quantity, price, "this nown")
         return price
 
     def get_total_discount_item_price(self):
@@ -133,16 +134,20 @@ class OrderItem(models.Model):
     def get_amount_saved(self):
         return self.get_total_item_price() - self.get_total_discount_item_price()
 
+
+
     def get_final_price(self):
 
-        if self.item.discountprice:
+        if self.item.discountprice > 0:
 
             results= self.get_total_discount_item_price()
             return results
-            print(results, "get final price")
+            print(results, "get final price for discount")
+
         else:
             results = self.get_total_item_price()
-            print(results, "get final price")
+            print(results, "get final price no discount")
+
             return results
 
 
@@ -168,7 +173,7 @@ class Order(models.Model):
         for order_item in self.items.all():
             total += order_item.get_final_price()
 
-            # print(total)
+            print(total)
             # total += float(od1)
         return total
 

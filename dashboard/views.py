@@ -118,7 +118,7 @@ def order_placed(sender, instance, **kwargs):
         email_notif1.save()
 
         email_notif2 = Email_notifications.objects.create(
-
+            
             seller = seller,
             buyer = buyer,
             title = order2["title"],
