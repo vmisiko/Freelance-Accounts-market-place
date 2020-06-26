@@ -1,6 +1,7 @@
 import random
 import string
 import requests
+import datetime
 from django.conf import settings
 from celery import shared_task
 from .models import WithdrawPayouts, Conversion, AccountsModel, Email_notifications
@@ -11,6 +12,7 @@ from django.utils import timezone
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+
 
 
 sender_batch_id =''.join(
@@ -144,6 +146,7 @@ def exchange_rate():
     conversion = Conversion.objects.all()
     for con in conversion:
         con.rate = int(rate)
+        con.date = datetime.now()
         con.save()
 
 @shared_task
