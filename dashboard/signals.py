@@ -34,7 +34,7 @@ def send_lnm_signal(sender, instance, **kwargs):
     print(rate, "Mpesa rate in signals working")
     amount1 = int(amount0)/int(rate)
     print(amount1, "rate in dollars")
-    status = instance.status
+    status = instance.paid
 
 
     if AccountsModel.objects.filter(phone_number= phone_number).exists() and status == False :

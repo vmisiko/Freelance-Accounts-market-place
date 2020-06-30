@@ -218,13 +218,13 @@ CELERY_BEAT_SCHEDULE = {
        'schedule': crontab(hour=23, minute=0),
 
        'args': (16, 16),
-    }, 
-"send_email_notifcation": {
-    'task': 'dashboard.tasks.send_email_notifications',
-        # There are 4 ways we can handle time, read further 
-    'schedule': 30,
-    'args': (16, 16),
     }
+# "send_email_notifications": {
+#     'task': 'dashboard.tasks.send_email_notifications',
+#         # There are 4 ways we can handle time, read further 
+#     'schedule': 30,
+#     'args': (16, 16),
+#     }
 }
 
 # ADMINS = [("Admin", "admin@freelancingaccounts.com")]

@@ -151,7 +151,8 @@ def exchange_rate():
         con.date = datetime.now()
         con.save()
 
-@shared_task
+
+@shared_task()
 def send_email_notifications():
 
     email_notif = Email_notifications.objects.filter(status= False)
@@ -191,6 +192,17 @@ def lnm_validation_save(lnm_id,order_id):
     order.items.ordered = True
     order.save()
     
+
+    items = order.items.all()
+    for i in items:
+        item_id = i.item.id
+
+        print(item_id, "lnm item id")
+        item = Item.objects.get(id = item_id)
+        print(item)
+        item.sold = True
+        item.save()
+        print("item saved")
    
     
     print("lnm and order saved")
@@ -201,6 +213,18 @@ def refund_order_save(order_id):
     order =  Order.objects.get(id=orderid)
     order.refund= True
     order.save()
+
+    items = order.items.all()
+    for i in items:
+        item_id = i.item.id
+
+        print(item_id, "lnm item id")
+        item = Item.objects.get(id = item_id)
+        
+        item.sold = False
+        item.save()
+        print("item saved")
+
 
 @shared_task
 def notify_admin():
@@ -219,10 +243,6 @@ def notify_admin():
 
         notif.status = True
         notif.save()
-
-
-
-
 
 @shared_task
 def order_save_notifications(ord_notif):

@@ -56,6 +56,18 @@ def payment_notification(sender, **kwargs):
             order.amount= float(net_amount)
             # order.items.ordered = True
             order.save()
+            
+            items = order.items.all()
+            for i in items:
+                item_id = i.item.id
+
+                print(item_id, "lnm item id")
+                item = Item.objects.get(id = item_id)
+                print(item)
+                item.sold = True
+                item.save()
+                print("item saved")
+
         qr = AccountsModel.objects.filter(user__username=ipn.custom).exists()
         
         if qr:

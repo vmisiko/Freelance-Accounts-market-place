@@ -4,7 +4,7 @@
 {% load staticfiles %} 
 <head>
   {% block meta_tags %}
-
+  
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Freelancing Accounts</title>
   <meta name="description" content="Online Market place for freelancing accounts. Buy varified freelanicing accounts">
@@ -165,7 +165,7 @@
             
             {% if request.user == object.created_by %}
 
-            <a  href = " {% url 'Home:edit_account' object.slug %}" class="btn btn-danger btn-md my-0 p" >Edit
+            <a  href = " {% url 'Home:edit_account' slug=object.slug %}" class="btn btn-danger btn-md my-0 p" >Edit
             
               </a>
 
