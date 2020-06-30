@@ -222,7 +222,7 @@ aria-hidden="true">
           <i class="fas fa-times fa-5x animated rotateIn infinite"></i>
         </div>
         <div class="col-9">
-          <P>
+          <P id="mpesa_limit">
             Request declined, You requested more than you have in your account.
           </P>
         </div>
@@ -387,6 +387,7 @@ aria-hidden="true">
           $("#submit-btn").show();
           $("#load_progress").hide();
           $("#ModalWarning").modal("show")
+          document.getElementById("mpesa_limit").innerHTML = data.more
          
         }
 

@@ -241,8 +241,6 @@
         
         });
 
-
-
     Vue.component("to-do", {
         delimiters: ['[[', ']]'],
         props: ['todo'],
@@ -295,19 +293,19 @@
                                 </div>
                             
                                 <div v-cloak v-show="status">
-                                <p> Enter Your Transaction Code </p>
+                                  <p> Enter Your Transaction Code </p>
 
-                                <form id="post-code" class=""> 
-                                  
-                                  <div class="md-form col-6 mx-auto mb-3">
-                                    <input type="text" id="id_code" v-model="code" class="form-control" placeholder="Mpesa code" required>
+                                  <form id="post-code" class=""> 
                                     
-                                  </div>
-                                  
-                                <button type="submit" class="btn btn-primary m-auto" @click.prevent ="postcode"> Confirm payment </button>
-                                <hr>
-                                <p> Not yet paid? <a href="" @click.prevent="ishidden = !ishidden; status=!status" >Back</a></p>
-                                </form>
+                                    <div class="md-form col-6 mx-auto mb-3">
+                                      <input type="text" id="id_code" v-model="code" class="form-control" placeholder="Mpesa code" required>
+                                      
+                                    </div>
+                                    
+                                  <button type="submit" class="btn btn-primary m-auto" @click.prevent ="postcode"> Confirm payment </button>
+                                  <hr>
+                                  <p> Not yet paid? <a href="" @click.prevent="ishidden = !ishidden; status=!status" >Back</a></p>
+                                  </form>
 
                                   
 
@@ -382,7 +380,7 @@
                     }
                 })
                 .then(response => {
-                   
+                   console.log(response.data)
                     if (response.data.message == "Transaction Successful") {
 
                   
@@ -430,6 +428,7 @@
                     }
                     else {
                     // console.log("not true");
+                    // this.init();
                     }
 
                 })
@@ -440,7 +439,7 @@
               },
             
             init(){
-              if (this.phone.length >= 9 ) {
+              if (this.ishidden == false ) {
                 console.log("hey polling")
                 this.validpay();
               }
@@ -452,18 +451,18 @@
 
         mounted: function () {
             this.init();
+            console.log(this.ishidden, "is hidden status")
               // if (this.phone.length != 0) {
               //   console.log("hey polling")
               //   this.validpay();
 
                 setInterval(function () {
                     this.init();
-                  }.bind(this), 3000); 
+                  }.bind(this), 5000); 
               // };            
         }
       
     });
-
 
       window.app = new Vue({
         delimiters: ['[[', ']]'],

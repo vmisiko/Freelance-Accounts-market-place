@@ -3,11 +3,14 @@
 {% extends "base.html"%}
 {% load staticfiles %} 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Freelance Accounts</title>
+  {% block meta_tags %}
 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Freelancing Accounts</title>
+  <meta name="description" content="Online Market place for freelancing accounts. Buy varified freelanicing accounts">
+  <meta name="keywords" content="freelancingAccounts, accounts,Accountsplace, unlocks, buy freelancing accounts ">
+
+  {% endblock %}
 </head>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 
@@ -162,7 +165,7 @@
             
             {% if request.user == object.created_by %}
 
-            <a  href = " {% url 'Home:edit_account' pk=object.id %}" class="btn btn-danger btn-md my-0 p" >Edit
+            <a  href = " {% url 'Home:edit_account' object.slug %}" class="btn btn-danger btn-md my-0 p" >Edit
             
               </a>
 

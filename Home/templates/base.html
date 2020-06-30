@@ -8,12 +8,16 @@
 {% load l10n %}
 
   <head>
-    <meta charset="utf-8">
-   
-    
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+
+    {% block meta_tags %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Freelancing Accounts</title>
+    <meta name="description" content="Online Market place for freelancing accounts. Buy varified freelanicing accounts">
+    <meta name="keywords" content="freelancingAccounts, accounts,Accountsplace, unlocks, buy freelancing accounts ">
+
+    {% endblock %}
+
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     
@@ -257,6 +261,7 @@ setTimeout(function(){
                       else if (data.ordered == false && data.released == false) {
                         this.message = data.buyer + " is in processes of ordering your product";
                         audio.play();
+                        console.log("printing toast")
                         
                       }
                       else if (data.ordered ==true && data.released ==true){

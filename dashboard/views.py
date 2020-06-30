@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import WithdrawPayouts,Refund, Email_notifications
+from .models import WithdrawPayouts,Refund, Email_notifications,Conversion
 from .forms import PayoutForm
 from django.views import generic
 from django.http import JsonResponse
@@ -15,14 +15,17 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 # from django.dispatch import receiver
-from .tasks import send_email_notifications
+from .tasks import send_email_notifications, refund_order_save,order_save_notifications
 
 ord_notif ={}
 def order_placed(sender, instance, **kwargs):
+
     seller=""
     order_id = instance.id
     buyer = instance.user.username
+    print(instance.seller, "this is instance .seller")
     if instance.seller:
+        print(instance.seller, "this is instance .seller")
         seller = instance.seller.get_username()
     else:
         seller = instance.seller 
@@ -40,100 +43,116 @@ def order_placed(sender, instance, **kwargs):
     
     print(ord_notif)
     
+    order_save_notifications.delay(ord_notif)
 
-    if "seller" in ord_notif:
-        seller = ord_notif["seller"]
-        buyer = ord_notif["buyer"]
-        s= User.objects.get(username=seller)
-        b = User.objects.get(username=seller)
-        seller_email = s.email
-        buyer_email = b.email
-        ordered = ord_notif["ordered"]
+    # if "seller" in ord_notif:
+    #     seller = ord_notif["seller"]
+    #     buyer = ord_notif["buyer"]
+    #     s= User.objects.get(username=seller)
+    #     b = User.objects.get(username=seller)
+    #     seller_email = s.email
+    #     buyer_email = b.email
+    #     ordered = ord_notif["ordered"]
 
-        released = ord_notif["released"]
-        refund = ord_notif["refund"]
-        order1 ={}
-        order2 = {}
-        email_host = settings.EMAIL_HOST_USER
+    #     released = ord_notif["released"]
+    #     refund = ord_notif["refund"]
+    #     order1 ={}
+    #     order2 = {}
+    #     email_host = settings.EMAIL_HOST_USER
             
-        if ordered ==True and released==False and refund == False:
+    #     if ordered ==True and released==False and refund == False:
 
-            order1 = {
+    #         order1 = {
 
-                "title" : "Your Item has been Ordered!!",
-                "text" : f"Your product has been ordered by buyer {buyer}.Kindly visit your account to check for your orders and transactions "
-            }
+    #             "title" : "Your Item has been Ordered!!",
+    #             "text" : f"Your product has been ordered by buyer {buyer}.Kindly visit your account to check for your orders and transactions "
+    #         }
 
-            order2 = {
+    #         order2 = {
                 
-            "title" : "You have Ordered!!",
-            "text" : f"Your have Ordered a product from Seller {seller}.Kindly visit your account to check for your orders and transactions "
-        }
+    #         "title" : "You have Ordered!!",
+    #         "text" : f"Your have Ordered a product from Seller {seller}.Kindly visit your account to check for your orders and transactions "
+    #     }
 
-        elif ordered ==True and released==True and refund == False:
-            order1 = {
+    #     elif ordered ==True and released==True and refund == False:
+    #         order1 = {
 
-                "title" : "Your cash has been Released!!",
-                "text" :  f"Your cash has been released by buyer {buyer}.Kindly visit your account to check your account balance, orders and transactions "
-            }
+    #             "title" : "Your cash has been Released!!",
+    #             "text" :  f"Your cash has been released by buyer {buyer}.Kindly visit your account to check your account balance, orders and transactions "
+    #         }
 
-            order2 = {
+    #         order2 = {
             
-                "title" : "Amount released!!",
-                "text" : f"Your cash has been released to seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
-            }
+    #             "title" : "Amount released!!",
+    #             "text" : f"Your cash has been released to seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
+    #         }
 
-        elif ordered==True and released==True and refund == True:
+    #     elif ordered==True and released==False and refund == True:
 
-            order1 = {
+    #         order1 = {
                     
-                "title" : "Order cancelled!!",
-                "text" :  f"The order to your product has been cancelled by {buyer}.Kindly visit your account and email us immidiately if you have complains pertaining this action."
-            }
+    #             "title" : "Order cancelled!!",
+    #             "text" :  f"The order to your product has been cancelled by {buyer}.Kindly visit your account and email us immidiately if you have complains pertaining this action."
+    #         }
 
-            order2 = {
+    #         order2 = {
                     
-                "title" : "Order cancelled!!",
-                "text" : f"Your have cancelled your order to by from {seller}. Kindly visit your account to check your account balance,orders and transactions"
-            }
+    #             "title" : "Order cancelled!!",
+    #             "text" : f"Your have cancelled your order to by from {seller}. Kindly visit your account to check your account balance,orders and transactions"
+    #         }
 
-        else:
-            order1.clear()
-            order2.clear()
+    #     elif ordered==False and released==False and refund == False:
 
+    #         order1 = {
+                    
+    #             "title" : "Order in Progress!!",
+    #             "text" :  f"The order to your product is in progress by {buyer}."
+    #         }
 
-        print(order1)
-        print(order2)
-
-        email_notif1 = Email_notifications.objects.create(
-            seller = seller,
-            buyer = buyer,
-            title = order1["title"],
-            message= order1["text"],
-            seller_email = seller_email,
-            buyer_email = buyer_email
-
-        )
-
-        email_notif1.save()
-
-        email_notif2 = Email_notifications.objects.create(
+    #         order2 = {
+                    
+    #             "title" : "Order In Progress",
+    #             "text" : f"Your have initiated an order from {seller}. Kindly select the payment option of your choice and complite your order"
+    #         }
             
-            seller = seller,
-            buyer = buyer,
-            title = order2["title"],
-            message= order2["text"],
-            seller_email = seller_email,
-            buyer_email = buyer_email,
 
-        )
+    #     else:
+    #         order1.clear()
+    #         order2.clear()
+
+
+    #     print(order1)
+    #     print(order2)
+
+    #     email_notif1 = Email_notifications.objects.create(
+    #         seller = seller,
+    #         buyer = buyer,
+    #         title = order1["title"],
+    #         message= order1["text"],
+    #         seller_email = seller_email,
+    #         buyer_email = buyer_email
+
+    #     )
+
+    #     email_notif1.save()
+
+    #     email_notif2 = Email_notifications.objects.create(
+            
+    #         seller = seller,
+    #         buyer = buyer,
+    #         title = order2["title"],
+    #         message= order2["text"],
+    #         seller_email = seller_email,
+    #         buyer_email = buyer_email,
+
+    #     )
         
-        email_notif2.save()
+    #     email_notif2.save()
 
-        try:
-            send_email_notifications.delay()
-        except:
-            pass
+    #     # try:
+    #     #     send_email_notifications.delay()
+    #     # except:
+    #     #     pass
 
       
 
@@ -158,7 +177,7 @@ def order_notification(request):
             refund = ord_notif["refund"]
             order1 ={}
             order2 = {}
-            email_host = settings.EMAIL_HOST_USER
+           
             
          
 
@@ -198,7 +217,8 @@ class WithdrawalView(generic.ListView):
         context = {"form": form,
                     "payouts": payouts,
                 }
-        if int(amount)!= 0:
+
+        if float(amount)!= 0:
             context["amount"] = "True"
         else:
             context["amount"] = "False"
@@ -217,6 +237,9 @@ def validate_widthrawal(request):
     account = AccountsModel.objects.get(user__username=request.user)
 
     amount1 = account.amount
+    conversion = Conversion.objects.all()
+    rate = [con.rate for con in conversion][0]
+    charges = 0
     
     if form.is_valid():
         first_name = form.cleaned_data.get("first_name")
@@ -229,24 +252,39 @@ def validate_widthrawal(request):
         amount_dispensed= 0
         data1 = {}
        
-        # data["percentage"] = "2"
-        # data['span'] = span
-        # data['gross'] = amount
-        # data["tcharges"]= dp
-        # data["net"] = amount_dispensed
-
+        
         dp = 0
         percentage = 0
-        if int(amount) <= int(amount1):
+        if float(amount) <= float(amount1):
+
 
             if payment_mode == "M":
-                dp = 0.01*int(amount)
-                amount_dispensed = amount - dp
-                percentage = 0.01
+                amount_converted = float(amount) * rate
+                if amount_converted <= 1000:
+                    charges = 15.27
+                    dp = float(charges) / float(rate)
+                    amount_dispensed = float(amount) - round(float(dp), 2)
+                    percentage = 1
+
+                if amount_converted >= 10001:
+                    charges = 22.40
+                    dp = float(charges) / float(rate)
+                    amount_dispensed = float(amount) - round(float(dp), 2)
+                    percentage = 1
+
+                if amount_converted >= 70001:
+                    data["message"] =  "You have exceeded Mpesa withdrawal limit"
+
+                    data["more"] = "You have exceeded Mpesa withdrawal limit,\n" + "You can withrwaw a to a maximum limit of KES 70,000 per transaction and Kes. 140,000 per day."
+        
+                    return JsonResponse(data)
+               
+
+
             else:
-                dp = 0.02*int(amount)
+                dp = 0.025*float(amount)
                 amount_dispensed = amount - dp
-                percentage = 0.02
+                percentage = 2.5
             
             data1 = {
                 "percentage":percentage,
@@ -312,11 +350,14 @@ class Release_Payment(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(Release_Payment, self).get_context_data(**kwargs)
         
-        order1 = Order.objects.filter(user = self.request.user, ordered= True, released = False)
+        order1 = Order.objects.filter(user = self.request.user, ordered= True, released = False ,refund=False)
         
         if order1:
+
             order = Order.objects.filter(user = self.request.user, ordered= True, released = False)
+
             self.order = order
+            
             context["order"] = order
 
             return context
@@ -376,7 +417,7 @@ class RefundView(generic.ListView):
     def get_queryset(self):
         queryset =  super(RefundView, self).get_queryset()
 
-        queryset = queryset.filter(user = self.request.user, ordered= True, refund=False, released =False)
+        queryset = queryset.filter(user = self.request.user, ordered= True, refund=False, released=False)
 
         return queryset
 
@@ -410,10 +451,10 @@ def validate_refund(request):
         message1= message
     
     try:
-        order =  Order.objects.get(id=orderid)
-        order.refund= True
-        order.save()
-        
+        # order =  Order.objects.get(id=orderid)
+        # order.refund= True
+        # order.save()
+        refund_order_save.delay(orderid)
         refund = Refund.objects.create(
             user = request.user,
             item = item,

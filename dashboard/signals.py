@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from .models import AccountsModel, WithdrawPayouts
+from .models import AccountsModel, WithdrawPayouts, Conversion, Refund, Email_notify_admin
 from paypal.standard.models import ST_PP_COMPLETED
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.dispatch import receiver
@@ -10,6 +10,7 @@ from .models import AccountsModel
 from Home.models import Order
 from django.core.mail import send_mail
 from django.conf import settings
+from .tasks import notify_admin
 # from paypal.standard.ipn.signals import valid_ipn_received
 
 @receiver(user_signed_up)
@@ -33,8 +34,11 @@ def send_lnm_signal(sender, instance, **kwargs):
     print(rate, "Mpesa rate in signals working")
     amount1 = int(amount0)/int(rate)
     print(amount1, "rate in dollars")
+    status = instance.status
 
-    if AccountsModel.objects.filter(phone_number= phone_number).exists():
+
+    if AccountsModel.objects.filter(phone_number= phone_number).exists() and status == False :
+
         account = AccountsModel.objects.get(phone_number= phone_number)
         user = account.user
         amount2 = account.amount
@@ -51,28 +55,65 @@ def send_lnm_signal(sender, instance, **kwargs):
         print("Account with that phone number does not exist")
 
 
+@receiver(signals.post_save, sender = Refund)
+def refund_signal(sender, instance, **kwargs):
+
+    user = instance.user
+    amount = instance.amount
+    seller = instance.seller
+    reason = instance.reason
+    status = instance.status
+    print("refund signal working")
+
+
+    if not status:
+
+        subject = "Refund Requested"
+        message =f"user {user} has requested for a Refund of USD:{amount} from seller {seller} \n Reason: {reason}" 
+        # to ="victormisiko.vm@gmail.com"
+        # email_host = settings.EMAIL_HOST_USER
+
+        # send_mail(subject, message, email_host, [to])
+
+        Email_notify_admin.objects.create(
+            subject = subject,
+            message = message
+        ) 
+        notify_admin.delay()
+    else:
+
+        print("status is true")
+
+        pass
+
+
 @receiver(signals.post_save, sender = WithdrawPayouts)
 def withdraw_signal(sender, instance, **kwargs):
 
     status = instance.status
     user = instance.user
     amount = instance.amount_dispensed
+    
     print(status, "signal status")
 
     if not status:
         subject = "Withdthrawal Payout requested!!"
         message =f"user {user} has requested for a payout of USD:{amount}."
-        to ="victormisiko.vm@gmail.com"
-        email_host = settings.EMAIL_HOST_USER
+        # to ="victormisiko.vm@gmail.com"
+        # email_host = settings.EMAIL_HOST_USER
 
-        send_mail(subject, message, email_host, [to])
+        # send_mail(subject, message, email_host, [to])
 
+        Email_notify_admin.objects.create(
+            subject = subject,
+            message = message
+        ) 
+
+        notify_admin.delay()
     else:
         print("status is true")
 
         pass
-
-
 
 
 

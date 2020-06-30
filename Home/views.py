@@ -20,6 +20,7 @@ from rest_framework.response import Response
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import JsonResponse
 from notifications.signals import notify
+from django.contrib.auth.models import User
 
 import random
 import string
@@ -75,6 +76,7 @@ def view_paypal(request):
         "cancel_return": request.build_absolute_uri(reverse('Home:payment-cancelled')),
         "custom": request.user,  # Custom command to correlate to some function later (optional)
     }
+
 
     # Create the instance.
     form = PayPalPaymentsForm(initial=paypal_dict)
@@ -245,35 +247,51 @@ class Checkout(LoginRequiredMixin,generic.View):
 
 
 @login_required
-def add_to_cart(request, pk):
-    item = get_object_or_404(Item, pk= pk)
+def add_to_cart(request, slug):
+
+    item = get_object_or_404(Item, slug= slug)
     order_item,created = OrderItem.objects.get_or_create(item = item ,user = request.user, ordered = False)
     order_qs = Order.objects.filter(user = request.user, ordered = False)
+    seller_id = item.created_by.id
+    user = User.objects.get(id=seller_id)
 
+    print(item.created_by,"this is the seller")
+    print(seller_id,"this is the seller's id")
     if order_qs.exists():
         order = order_qs[0]
 
         if order.items.filter(item__pk = item.pk).exists():
+            
             order_item.quantity += 1
+
             order_item.save()
+
             messages.info(request, "This item quantity was updated to your cart ")
+
             return redirect("Home:order-summary")
+
         else:
             messages.info(request, "This item was added to your cart ")
+            print("this is from  orderitem")
             order.items.add(order_item)
-            
+            order.seller = user
+            order.save()
+
             return redirect("Home:order-summary")
     else:
+      
         ordered_date = timezone.now()
-        order = Order.objects.create(user = request.user, ordered_date = ordered_date)
+        order = Order.objects.create(user = request.user, ordered_date = ordered_date, seller = user)
         order.items.add(order_item)
+        print("this is from  order")
+
         messages.info(request, "This item was added to your cart ")
         
     return redirect("Home:order-summary")
 
 @login_required
-def remove_from_cart(request, pk):
-    item = get_object_or_404(Item, pk = pk)
+def remove_from_cart(request, slug):
+    item = get_object_or_404(Item, slug= slug)
     order_qs = Order.objects.filter(user = request.user, ordered = False)
 
     if order_qs.exists():
@@ -297,8 +315,8 @@ def remove_from_cart(request, pk):
 
     return redirect("Home:order-summary" )
 
-def remove_single_item_from_cart(request, pk):
-    item = get_object_or_404(Item, pk = pk)
+def remove_single_item_from_cart(request,slug):
+    item = get_object_or_404(Item, slug= slug)
     order_qs = Order.objects.filter(user = request.user, ordered = False)
 
     if order_qs.exists():
@@ -329,7 +347,7 @@ def remove_single_item_from_cart(request, pk):
 
 class Sell_item(LoginRequiredMixin,CreateView):
     model = Item
-    fields = '__all__'
+    fields = ["title","price","discountprice","category","label","Level","finished_orders","rating","Reviews","profile","description","diplay_pic","contact" ]
     template_name = "sell_item.html"
 
     def form_valid(self, form):
@@ -337,13 +355,10 @@ class Sell_item(LoginRequiredMixin,CreateView):
         obj.created_by = self.request.user
         obj.save()        
         return redirect(obj.get_absolute_url())
-    
-
-
-    
+       
 
 class Sell_item_Update(LoginRequiredMixin,UpdateView):
     model = Item
-    fields = '__all__'
+    fields =  fields = ["title","price","discountprice","category","label","Level","finished_orders","rating","Reviews","profile","description","diplay_pic","contact" ]
     template_name = "sell_item.html"
 

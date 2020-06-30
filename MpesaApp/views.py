@@ -1,4 +1,5 @@
 import json
+from math import ceil
 from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,11 +16,11 @@ from rest_framework.permissions import AllowAny
 from .serializers import LNMOnlineSerializer,C2bSerializer, B2cTransaction
 from . models  import LNMOnline,C2bTransaction, B2cTransaction
 from Home.models import OrderItem, Order
-from dashboard.models import AccountsModel, Conversion
+from dashboard.models import AccountsModel,Conversion
 from MpesaApp.models import LNMOnline
 from django.db.models.signals import post_save
 from dashboard.models import Conversion
-
+from dashboard.tasks import lnm_validation_save
 
 code_signal = {}
 
@@ -27,11 +28,14 @@ def lnm_signal(sender, instance, **kwargs):
 
     phone_number = instance.PhoneNumber
     amount = instance.Amount
+    if instance.paid == False:
 
-    code_signal["phone"] = phone_number
-    code_signal["amount"] = amount 
-    code_signal["instance_id"]= instance.id
-    print(code_signal)
+        code_signal["phone"] = phone_number
+        code_signal["amount"] = amount 
+        code_signal["instance_id"]= instance.id
+        print(code_signal, "CODE SIGNAL")
+    else:
+        pass
 
 post_save.connect(lnm_signal, sender=LNMOnline)
 
@@ -42,45 +46,52 @@ def realtime_validate(request):
     phone = k["body"]["phone"]
     order_id = k["body"]["order_id"]
 
-    print(phone)
+    print(phone, "from valid pay")
     
     
     data = {}
 
 
     if "phone" in  code_signal:
-        print(code_signal, "codesignal")
+        
         fon = code_signal['phone']
 
         account = AccountsModel.objects.get(phone_number = fon)
 
 
-        order = Order.objects.get(id=order_id)
+        od = Order.objects.filter(id=order_id).exists()
         user = account.user
         print(user, request.user)
 
-        if user == request.user:
-            print("the phone is true")
-            print(f"{phone} equal to {code_signal['phone']}")
-        else:
-            # print("the phone is false")
-            print(f"{phone} not equal to {code_signal['phone']}")
+  
 
         if user == request.user:
-
-            data["message"] = True
-            order.ordered = True
-            order.items.ordered = True
-            order.save()
+            data["message"]= True
             instance_id = code_signal["instance_id"]
-            lnm = LNMOnline.objects.get(id = instance_id )
-            lnm.paid = True
-            lnm.save()
+
+            lnm_validation_save.delay(instance_id, order_id)
+
+            # print("numeber are equal hence order exists")
+            # order = Order.objects.get(id=order_id)
+            
+            # order.ordered = True
+            # order.items.ordered = True
+            # order.save()
+            # 
+            # lnm = LNMOnline.objects.get(id = instance_id )
+            # lnm.paid = True
+            # lnm.save()
+            
 
         else:
-
+            print("numeber are not equal")
             data["message"]= False
 
+    else:
+        print("key phone not in code signal")
+        data["message"]= False
+    
+    print(data["message"], "this is data.message")
     code_signal.clear()
 
     return JsonResponse(data)
@@ -94,7 +105,7 @@ def view_for_mpesa(request):
     form2 = Mpesa_c2b_checkout()
 
     amount1 = order.get_total()
-    amount = int(amount1) *100
+    amount = float(amount1) *100
     
         
     context = {"form": form,
@@ -116,9 +127,8 @@ def view_for_mpesa2(request):
         form2 = Mpesa_c2b_checkout()
 
         amount1 = order.get_total()
-        amount = float(amount1) *float(rate)
-        # amount = int(amount1) * 100 
-        # print(amount)
+        amount2 = float(amount1) *float(rate)
+        amount = ceil(amount2)
             
         context = {"form": form,
                     "order":  order,
@@ -212,18 +222,19 @@ def validate_mpesa_code(request):
         # data["message"] = "Mpesa Code Does exist"
                 
         # return JsonResponse(data)
+
         if result1 == True: 
 
             result = LNMOnline.objects.get(MpesaReceiptNumber = mpesa_code, paid = False)
             
-            result.paid = True
+            instance_id = result.id
 
-            result.save()
+            lnm_validation_save.delay(instance_id, order_id)
 
-            order.ordered = True
-            order.items.ordered = True
+            # order.ordered = True
             # order.items.ordered = True
-            order.save()
+            # order.items.ordered = True
+            # order.save()
 
             data["message"] = "Transaction Successful"
             print("transaction successful")
@@ -235,7 +246,9 @@ def validate_mpesa_code(request):
             data["message"] = "Mpesa Code Does not exist"
                 
             return JsonResponse(data)
+
     else:
+
         data["message"] = "Enter Mpesa Code"
                 
         return JsonResponse(data)

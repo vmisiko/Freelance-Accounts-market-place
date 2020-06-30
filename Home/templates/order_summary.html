@@ -57,10 +57,10 @@
 
                   
                   </td>
-                  <td><a href = "{% url 'Home:remove_item_from_cart' pk=order_item.item.pk %}" >
+                  <td><a href = "{% url 'Home:remove_item_from_cart' slug=order_item.item.slug %}" >
                     <i class="fas fa-minus mr-2"></i></a>
                         {{ order_item.quantity }}
-                     <a href = "{% url 'Home:add_to_cart' pk=order_item.item.pk %}" ><i class="fas fa-plus ml-2"></i></a></td>
+                     <a href = "{% url 'Home:add_to_cart' slug=order_item.item.slug %}" ><i class="fas fa-plus ml-2"></i></a></td>
 
                   <td>
                     $
@@ -73,24 +73,13 @@
                       {{ order_item.get_total_item_price }}
 
                     {% endif %}
-                    <a style = 'color:red;'href = "{% url 'Home:remove_from_cart' pk=order_item.item.pk %}" >
+                    <a style = 'color:red;'href = "{% url 'Home:remove_from_cart' slug=order_item.item.slug %}" >
                     <i class="fas fa-trash float-right"></i>
                   </a>
 
                   </td>
                 </tr>
-                {% empty %}
-                <tr>
-                  <td colspan = '5'> Your cart is empty</td>
-                </tr>
-                <tr>
-                  <td colspan = "5" '>
-                    <b>
-                      <a href = "/" class = "btn btn-info" > continue shopping </a>
-                   </b>
-                 </td>
-                </tr>
-                {% endfor %}
+
                 <tr>
 
                 </tr>
@@ -122,6 +111,20 @@
 
                    </b> </td>
                 </tr>
+
+                {% empty %}
+                <tr>
+                  <td colspan = '5'> Your cart is empty</td>
+                </tr>
+                <tr>
+                  <td colspan = "5" '>
+                    <b>
+                      <a href = "/" class = "btn btn-info" > continue shopping </a>
+                   </b>
+                 </td>
+                </tr>
+                {% endfor %}
+              
                 
               </tbody>
             </table>

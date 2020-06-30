@@ -4,6 +4,7 @@ from django.shortcuts import reverse
 from django.conf import settings
 from django_countries.fields import CountryField
 
+
 from django.template.defaultfilters import slugify
 from paypal.standard.ipn.signals import valid_ipn_received
 from autoslug import AutoSlugField
@@ -50,6 +51,7 @@ class Item(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE,blank = True, null = True, editable = False)
     created_at = models.DateTimeField(auto_now_add= True, blank = True, null = True )
     title = models.CharField(max_length = 100)
+    slug = models.SlugField(blank = True, null = True)
     price = models.FloatField(default = 0.0)
     discountprice = models.FloatField(blank= True, null = True)
     category = models.CharField(choices = Category_choices, max_length=2)
@@ -70,13 +72,13 @@ class Item(models.Model):
 
     def get_absolute_url(self):
         return reverse("Home:product", kwargs ={
-            'pk': self.pk
+             'slug': self.slug
         })
     
     def get_add_to_cart_url(self):
 
         return reverse("Home:add_to_cart", kwargs ={
-            'pk': self.pk
+             'slug': self.slug
         })
 
     def get_discount_price(self):
@@ -85,7 +87,7 @@ class Item(models.Model):
 
     def get_remove_from_cart_url(self):
         return reverse("Home:remove_from_cart", kwargs ={
-            'pk': self.pk
+             'slug': self.slug
         })
     # def save(self, *args, **kwargs):
     #     self.slug = slugify(self.title)

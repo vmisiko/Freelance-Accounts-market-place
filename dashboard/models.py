@@ -72,3 +72,10 @@ class Email_notifications(models.Model):
     buyer_email = models.EmailField(max_length=100,null=True, blank=True)
     status =models.BooleanField(default=False)
     date =models.DateTimeField(auto_now_add=True)
+
+
+class Email_notify_admin(models.Model):
+    subject = models.CharField(max_length=50, null=True, blank=True)
+    message = models.CharField(max_length=500, null=True, blank=True)
+    status =  models.BooleanField(default=False)
+

@@ -183,7 +183,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # paypal  Configuration
 PAYPAL_RECIEVER_EMAIL = "misikovictor123@gmail.com"
-PAYPAL_TEST = False
+PAYPAL_TEST = True
 
 
 REST_FRAMEWORK = {
@@ -215,19 +215,27 @@ CELERY_BEAT_SCHEDULE = {
 'exchange_rate': {
        'task': 'dashboard.tasks.exchange_rate',
         # There are 4 ways we can handle time, read further 
-       'schedule': 3600.0,
+       'schedule': crontab(hour=23, minute=0),
+
+       'args': (16, 16),
     }, 
+"send_email_notifcation": {
+    'task': 'dashboard.tasks.send_email_notifications',
+        # There are 4 ways we can handle time, read further 
+    'schedule': 30,
+    'args': (16, 16),
+    }
 }
 
 # ADMINS = [("Admin", "admin@freelancingaccounts.com")]
 
 #email backend
-DEFAULT_FROM_EMAIL ='admin@freelancingaccounts.com'
+DEFAULT_FROM_EMAIL ='noreply@freelancingaccounts.com'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_HOST_USER = 'admin@freelancingaccounts.com'
-EMAIL_HOST_PASSWORD = 'vmisiko1'
+EMAIL_HOST_USER = 'noreply@freelancingaccounts.com'
+EMAIL_HOST_PASSWORD = 'vmisiko2'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

@@ -4,7 +4,7 @@ import requests
 import datetime
 from django.conf import settings
 from celery import shared_task
-from .models import WithdrawPayouts, Conversion, AccountsModel, Email_notifications
+from .models import WithdrawPayouts, Conversion, AccountsModel, Email_notifications, Email_notify_admin
 from Home.models import Order,Item
 from djangoProject.mpesa.b2c import b2c_payments
 from . payout import paypal_payout_release
@@ -12,7 +12,9 @@ from django.utils import timezone
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-
+from MpesaApp.models import LNMOnline
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 
 sender_batch_id =''.join(
@@ -172,23 +174,170 @@ def send_email_notifications():
         em.status = True
         em.save()
 
-        # try:
+       
 
-        #     mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
-        #     em.status = True
-        #     em.save()
+@shared_task
+def lnm_validation_save(lnm_id,order_id):
 
-        # except:
+    instance_id = lnm_id
+    order_id = order_id 
 
-        #     print("mail not sent")
+    lnm = LNMOnline.objects.get(id = instance_id )
+    lnm.paid = True
+    lnm.save()
 
-        
-        
-
+    order = Order.objects.get(id=order_id)       
+    order.ordered = True
+    order.items.ordered = True
+    order.save()
     
-
-
-
+   
+    
+    print("lnm and order saved")
         
+@shared_task
+def refund_order_save(order_id):
+    orderid = order_id
+    order =  Order.objects.get(id=orderid)
+    order.refund= True
+    order.save()
+
+@shared_task
+def notify_admin():
+
+    notifications = Email_notify_admin.objects.filter(status=False)
+
+    for notif in notifications:
+
+        subject = notif.subject
+        message = notif.message
+
+        to ="victormisiko.vm@gmail.com"
+        email_host = settings.EMAIL_HOST_USER
+
+        send_mail(subject, message, email_host, [to])
+
+        notif.status = True
+        notif.save()
 
 
+
+
+
+@shared_task
+def order_save_notifications(ord_notif):
+
+    ord_notif = ord_notif
+    if "seller" in ord_notif:
+        seller = ord_notif["seller"]
+        buyer = ord_notif["buyer"]
+        s= User.objects.get(username=seller)
+        b = User.objects.get(username=seller)
+        seller_email = s.email
+        buyer_email = b.email
+        ordered = ord_notif["ordered"]
+
+        released = ord_notif["released"]
+        refund = ord_notif["refund"]
+        order1 ={}
+        order2 = {}
+        email_host = settings.EMAIL_HOST_USER
+            
+        if ordered ==True and released==False and refund == False:
+
+            order1 = {
+
+                "title" : "Your Item has been Ordered!!",
+                "text" : f"Your product has been ordered by buyer {buyer}.Kindly visit your account to check for your orders and transactions "
+            }
+
+            order2 = {
+                
+            "title" : "You have Ordered!!",
+            "text" : f"Your have Ordered a product from Seller {seller}.Kindly visit your account to check for your orders and transactions "
+        }
+
+        elif ordered ==True and released==True and refund == False:
+            order1 = {
+
+                "title" : "Your cash has been Released!!",
+                "text" :  f"Your cash has been released by buyer {buyer}.Kindly visit your account to check your account balance, orders and transactions "
+            }
+
+            order2 = {
+            
+                "title" : "Amount released!!",
+                "text" : f"Your cash has been released to seller {seller}. Kindly visit your account to check your account balance,orders and transactions"
+            }
+
+        elif ordered==True and released==False and refund == True:
+
+            order1 = {
+                    
+                "title" : "Order cancelled!!",
+                "text" :  f"The order to your product has been cancelled by {buyer}.Kindly visit your account and email us immidiately if you have complains pertaining this action."
+            }
+
+            order2 = {
+                    
+                "title" : "Order cancelled!!",
+                "text" : f"Your have cancelled your order to by from {seller}. Kindly visit your account to check your account balance,orders and transactions"
+            }
+
+        elif ordered==False and released==False and refund == False:
+
+            order1 = {
+                    
+                "title" : "Order in Progress!!",
+                "text" :  f"The order to your product is in progress by {buyer}."
+            }
+
+            order2 = {
+                    
+                "title" : "Order In Progress",
+                "text" : f"Your have initiated an order from {seller}. Kindly select the payment option of your choice and complite your order"
+            }
+            
+
+        else:
+            order1.clear()
+            order2.clear()
+
+
+        print(order1)
+        print(order2)
+
+        email_notif1 = Email_notifications.objects.create(
+            seller = seller,
+            buyer = buyer,
+            title = order1["title"],
+            message= order1["text"],
+            seller_email = seller_email,
+            buyer_email = buyer_email
+
+        )
+
+        email_notif1.save()
+
+        email_notif2 = Email_notifications.objects.create(
+            
+            seller = seller,
+            buyer = buyer,
+            title = order2["title"],
+            message= order2["text"],
+            seller_email = seller_email,
+            buyer_email = buyer_email,
+
+        )
+        
+        email_notif2.save()
+
+        try:
+
+            send_email_notifications.delay()
+
+        except:
+
+            pass
+
+      

@@ -1,10 +1,12 @@
 import base64
 import requests
+from math import ceil
 from djangoProject.mpesa import keys
 from datetime import datetime
 from djangoProject.mpesa.access_token import generate_access_token
 from djangoProject.mpesa.encode import generate_password
 from djangoProject.mpesa.utils import formatted_time
+
 
 # print(datetime.now())2019-10-23 19:35:31.462259
 # 2019-10-23 19:35:31.462259 = 
@@ -19,7 +21,7 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     account = AccountReference  
     callbackurl = callbackurl
     formated_time = formatted_time()
-    amount= round(int(amount))
+    amount= ceil(float(amount))
 
     print(formated_time, " this is formatted time")
 
