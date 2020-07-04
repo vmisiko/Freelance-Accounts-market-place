@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<main  >
+    <div id= "app" class="container">
+
+        
+
+        
+        <div class="row my-5 ">
+            <div class="col-lg-6" style="float:none;margin:auto;">
+                <div class="card">
+                    <div class="card-body mt-3">
+                        <form action="" method="post" >
+                            <select class="browser-default custom-select custom-select-lg mb-3">
+                                <option selected>Select Unlock </option>
+                                <option value="1">Chegg Unlocks</option>
+                                <option value="2"> CourseHero Unlocks </option>
+                                <option value="3">Scrbd Unlocks</option>
+                              </select>
+
+                            <div class="form-row">
+                                <div class="col-md-6 form-group">
+                                    <input required="" type="text" name="name" class="form-control" id="name" placeholder="Enter Your Full Name">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <input required="" type="email" class="form-control" name="email" id="email" placeholder="Enter Your Email Address">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                        <textarea required="" class="form-control" name="message" rows="5" placeholder="Please paste your Chegg/CourseHero/Scribd question link here. Or write the title of textbook and question number"></textarea>
+                            </div>
+                            <div class="text-center">
+                                <input style="padding: 10px 24px; border: none" class="btn btn-primary" type="submit" value="Send Request">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+
+
+{% endblock %}

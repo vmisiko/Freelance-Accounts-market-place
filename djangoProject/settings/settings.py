@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_countries',
     'paypal.standard.ipn',
     "dashboard",
+    "UnlocksApp",
 
     'rest_framework',
     'rangefilter',

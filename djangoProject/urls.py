@@ -27,6 +27,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('dashboard/', include('dashboard.urls')),
     path("mobile/", include("MpesaApp.urls")),
+    path("unlocks/", include("UnlocksApp.urls")),
     path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
 
 

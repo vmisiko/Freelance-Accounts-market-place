@@ -43,7 +43,7 @@ Level_choices = {
     ("Ivy","Ivy"),
     ("Juniour","Junior"),
     ("Intermediate","Intermediate"),
-    ("r","Seni0r"),
+    ("Senior","Senior"),
     
 }
 

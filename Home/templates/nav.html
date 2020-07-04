@@ -1,8 +1,5 @@
 {% load cart_template_tags %}
 {% load static %}
-{% load notifications_tags %} 
-
- 
 
     <nav class="navbar fixed-top navbar-expand-lg  navbar-dark indigo mb-5">
         <div class = 'container' >
@@ -34,6 +31,21 @@
                   </a>
                 </li>
 
+                <!-- <li class="nav-item dropdown">
+                  <a class = "nav-link dropdown-toggle" data-toggle="dropdown" href="/unlocks/" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   Logins & Unlocks
+                  </a>
+
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="/unlocks/">UNLOCKS
+
+
+                      </a>
+                      <a class="dropdown-item" href="/unlocks/logins/">LOGINS</a>
+                      
+                    </div>
+                </li> -->
+
                 
               </ul>
 
@@ -48,7 +60,7 @@
               {%  if request.user.is_authenticated  %}
 
               
-              {% notifications_unread as unread_count %}
+             
      
              
                 <li class="nav-item">
@@ -73,7 +85,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/dashboard/transactions/">Orders and Transactions
                           <Sup>
-                            <span class="badge warning-color badge-pill z-depth-1 mr-1 animated heartBeat infinite" id="notification1">{{unread_count}}</span>
+                            <span class="badge warning-color badge-pill z-depth-1 mr-1 animated heartBeat infinite" id="notification1"></span>
                           </Sup>
                         </a>
                         <div class="dropdown-divider"></div>
