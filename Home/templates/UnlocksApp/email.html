@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <main class = 'container'>
+            <!-- Card Narrower -->
+        <div class="card card-cascade narrower">
+
+            <!-- Card image -->
+            <div class="view view-cascade overlay">
+            <img class="card-img-top" src="{% static 'logo.png' %}"
+                alt="Freelancing Account">
+            <a>
+                <div class="mask rgba-white-slight"></div>
+            </a>
+            </div>
+        
+            <!-- Card content -->
+            <div class="card-body card-body-cascade">
+        
+            <!-- Label -->
+            <h5 class="pink-text pb-2 pt-1"><i class="fas fa-bell"></i></i> Logins From freelancing Accounts</h5>
+            
+                <P> You have purchased Logins from Freelancing Accounts. Below is your Login details: </P>
+
+                <li >{{order.email}}</li>
+                <li >{{order.password}}</li>
+                
+                <p>
+                   <Strong>Caution!!</Strong> Kindly ensure you not, change your the password of the Account. 
+                </p>
+                <p> Happy Logins!!</p>
+
+            <!-- Button -->
+            <!-- <a href="https://freelancingaccounts.com" class="btn btn-unique"> Check it out </a> -->
+
+            </div>
+        
+        </div>
+        <!-- Card Narrower -->
+    </main>
+</body>
+</html>

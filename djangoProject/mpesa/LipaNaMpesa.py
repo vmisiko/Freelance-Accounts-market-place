@@ -40,7 +40,6 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
     headers = { "Authorization": "Bearer %s" % access_token }
 
     request = {
-
         "BusinessShortCode": keys.bussiness_shortcode,
         "Password": decoded_password,
         "Timestamp": formated_time,
@@ -52,7 +51,6 @@ def lipa_na_mpesa(phone_number, amount , callbackurl, AccountReference,):
         "CallBackURL": callbackurl,
         "AccountReference": account,
         "TransactionDesc": "Buy Freelancing account Account",
-
       }
       
     response = requests.post(api_url, json = request, headers=headers)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import LNMOnline, C2bTransaction, B2cTransaction
+from .models import LNMOnline, C2bTransaction, B2cTransaction, LNMOnline2
 
 class LNMOnlineSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,6 +14,22 @@ class LNMOnlineSerializer(serializers.ModelSerializer):
 "TranscationDate",
 "PhoneNumber",
 "paid"]
+
+
+class LNMOnline2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = LNMOnline2
+        fields = ['id',"MerchantRequestID",
+"CheckoutRequestID",
+"ResultCode",
+"ResultDesc",
+"Amount",
+"MpesaReceiptNumber",
+"Balance",
+"TranscationDate",
+"PhoneNumber",
+"paid"]
+
 class C2bSerializer(serializers.ModelSerializer):
     class Meta:
         model = C2bTransaction

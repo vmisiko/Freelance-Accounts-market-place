@@ -40,3 +40,15 @@ class B2cTransaction(models.Model):
     ReceiverPartyPublicName = models.CharField(max_length=50, blank= True, null = True)
     B2CChargesPaidAccountAvailableFunds = models.FloatField(default=  0.0)
     B2CRecipientIsRegisteredCustomer = models.CharField(max_length=50, blank= True, null = True)
+
+class LNMOnline2(models.Model):
+    MerchantRequestID= models.CharField(blank = True,null = True,max_length = 50)
+    CheckoutRequestID= models.CharField(blank = True,null = True,max_length = 50)
+    ResultCode = models.IntegerField(blank = True,null = True)
+    ResultDesc = models.CharField(blank = True,null = True, max_length = 50)
+    Amount = models.FloatField(blank = True,null = True)
+    MpesaReceiptNumber = models.CharField(blank = True,null = True, max_length = 15)
+    Balance = models.CharField(default = 0,max_length = 12)
+    TranscationDate = models.DateTimeField(blank = True,null = True)
+    PhoneNumber = models.CharField(blank = True,null = True, max_length = 15)
+    paid = models.BooleanField(default = False)

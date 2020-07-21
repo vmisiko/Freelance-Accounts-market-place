@@ -39,6 +39,7 @@
     <link href="{% static 'css/mdb.min.css'%}" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="{% static 'css/style.min.css' %} " rel="stylesheet">
+   
     <link
     type="text/css"
     rel="stylesheet"
@@ -58,11 +59,13 @@
   <script src="https://unpkg.com/vue@latest/dist/vue.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  {% block extra-style %}
+
     <style type="text/css">
       html,
       body,
       header,
-      .carousel {
+      .carousel  {
         height:400px;
       }
 
@@ -93,7 +96,11 @@
         }
       }
       
+
     </style>
+
+  {% endblock %}
+    
 
 {% endblock %}
 {% block style %}
@@ -182,7 +189,7 @@
     {% endfor %}
 {% endif %}
 
-<div id="app-alert"  class=" container-fluid mt-5 pt-1 " style="display: none;" >
+<div id="app-alert"  class=" container-fluid mt-5 pt-1  " style="display: none;" >
   <div id="notification" class="alert alert-primary alert-dismissible fade show mt-5" role="alert" v-cloak v-show="alert" >
         
        <P id=""> [[message]]</P>
@@ -192,7 +199,7 @@
   </div>
 </div>
 
-
+<hr class=" d-md-none mt-4">
 <div class="mt-4">
     {% block content %}
 
@@ -203,7 +210,19 @@
 {% include "footer.html" %}
 
 
-
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/5f176a48a45e787d128be11e/default';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 
 
 
@@ -211,6 +230,7 @@
 <script  src="{% static 'js/bootstrap.bundle.js' %}"></script>
 <script  src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script  src="{% static 'js/bootstrap.min.js' %}"></script>
+
 
 
   {% block scripts %}
@@ -327,19 +347,8 @@ setTimeout(function(){
 </script>
 
 <script>
-   // (function poll(){
-  //   console.log("hey")
-  //   $.ajax({
-  //      url: "{% url  'dashboard:order_notification' %}",
-  //      type:"GET", 
-  //      success: function(data){
-  //         console.log(data)
-
-  //         document.getElementById("notification1").innerHTML = "Your Item was ordered"
-          
-
-  //   }, dataType: "json", complete: poll, timeout: 300000 });
-  //   })();
+  // Animations initialization
+  new WOW().init();
 </script>
 
 </body>

@@ -1,7 +1,7 @@
 {% load cart_template_tags %}
 {% load static %}
 
-    <nav class="navbar fixed-top navbar-expand-lg  navbar-dark indigo mb-5">
+    <nav class="navbar fixed-top navbar-expand-lg  navbar-dark indigo mb-5 scrolling-navbar">
         <div class = 'container' >
             <a class="navbar-brand" href="/home/">
               <img src="{% static 'whitelogo.png' %}" height="45px" alt="">
@@ -25,26 +25,20 @@
                     Sell Account
                   </a>
                 </li>
+                
+
+                <li class="nav-item">
+                  <a class = "nav-link" href="/unlocks/" >
+                    Unlocks & Logins
+                  </a>
+                </li>
                 <li class="nav-item">
                   <a class = "nav-link" href="/" >
                     Contacts
                   </a>
                 </li>
 
-                <!-- <li class="nav-item dropdown">
-                  <a class = "nav-link dropdown-toggle" data-toggle="dropdown" href="/unlocks/" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   Logins & Unlocks
-                  </a>
-
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="/unlocks/">UNLOCKS
-
-
-                      </a>
-                      <a class="dropdown-item" href="/unlocks/logins/">LOGINS</a>
-                      
-                    </div>
-                </li> -->
+              
 
                 
               </ul>

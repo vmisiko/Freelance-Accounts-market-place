@@ -11,6 +11,7 @@ urlpatterns = [
     path('validate_payment/', views.lnm_validate_post, name = 'validate_payment'),
     path('validate_stk_code/', views.validate_mpesa_code, name = 'validate_mpesa_code'),
     path('lnm/', views.LNMCallbackUrl.as_view(), name = 'lnm-callbackurl'), 
+    path('lnm_unlock/', views.LNM2CallbackUrl.as_view(), name = 'lnm_unlock_callbackurl'), 
     path('c2b_callback/', views.C2bCallbackUrl.as_view(), name = 'c2b-callbackurl'),
     path('b2c_callback/', views.B2cCallbackUrl.as_view(), name = 'b2c-callbackurl'),
     path('valid_pay/', views.realtime_validate, name = 'valid_pay'),

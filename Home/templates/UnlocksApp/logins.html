@@ -3,39 +3,42 @@
 
 {% block content %}
 
-<main  >
-    <div id= "app" class="container">
+<main id ="logins_app">
 
-        
 
-        
+    <div  class="container">
+
         <div class="row my-5 ">
             <div class="col-lg-6 entries" style="float:none;margin:auto;">
                 <div class="card">
                     <div class="card-body mt-3">
-                        <form action="" method="post" >
-                            <select class="browser-default custom-select custom-select-lg mb-3">
-                                <option selected>Select Logins </option>
-                                <option value="Chegg Logins">Chegg Logins </option>
-                                <option value="CourseHero Logins"> CourseHero Logins </option>
-                                <option value="Scrbd Logins"> Scrbd Logins </option>
-                                <option value="Turnitin Logins"> Turnitin Logins </option>
-                                <option value="Grammaly Logins"> Grammaly Logins </option>
-                                <option value="Netflix Logins"> Netflix Logins </option>
+                        <form action="" method="post" @submit.prevent="post_logins" >
+                          {% csrf_token %}
+                          <select name="category" class="browser-default custom-select custom-select-lg mb-3" required="" id="id_category">                                <option selected>Select Logins </option>
+                                <option value="Chegg">Chegg Logins </option>
+                                <option value="CourseHero"> CourseHero Logins </option>
+                                <option value="Scrbd"> Scrbd Logins </option>
+                                <option value="Turnitin"> Turnitin Logins </option>
+                                <option value="Grammaly"> Grammaly Logins </option>
+                                <option value="Netflix"> Netflix Logins </option>
                                 
                               </select>
 
-                            <div class="form-row">
+                              <div class="form-row">
                                 <div class="col-md-6 form-group">
-                                    <input required="" type="text" name="name" class="form-control" id="name" placeholder="Enter Your Full Name">
+                                    <input type="text" name="full_Names" maxlength="500" class="textinput textInput form-control" required="" id="id_full_Names" placeholder="Enter Your Full Name">
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <input required="" type="email" class="form-control" name="email" id="email" placeholder="Enter Your Email Address">
+                                  <input type="email" name="email" maxlength="254" class="emailinput form-control" required="" id="id_email" placeholder="Enter Your Email Address">
                                 </div>
                             </div>
-                           
                             <div class="text-center">
-                                <input style="padding: 10px 24px; border: none" class="btn btn-primary" type="submit" value="Send Request">
+                                <button v-if="loader" style="padding: 10px 24px; border: none" class="btn btn-primary" type="submit" >Send Request </button>
+                                <button v-else="!loader" class="btn btn-primary" type="button" disabled >
+                                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                                  Loading...
+                                </button>   
+
                             </div>
                         </form>
                     </div>
@@ -46,11 +49,480 @@
 
     </div>
 
+
+<mpayment inline-template>
+    <div>
+      
+  
+    
+      <!-- Central Modal Small -->
+      <div class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  
+        <!-- Change class .modal-sm to change the size of the modal -->
+        <div class="modal-dialog modal-notify modal-success " role="document">
+  
+  
+          <div class="modal-content text-center">
+            <div class="modal-header">
+              <p class="heading lead"> Lipa na Mpesa Till </p>
+        
+              <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+                <span aria-hidden="true" class="white-text">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+              <section v-show="ishidden">
+                <div>
+                  <form id="postpay"  >
+                   <h3> Ref :  [[req_id]] </h3>
+                    <p class="text-muted ">
+                    Enter your M-Pesa phone number below and Click Pay now then check your phone handset for an 
+                    instant payment prompt from safaricom M-pesa.
+                    </p>
+  
+                      <p> Enter following format after +254: 721xxxxxx <p>
+                    [[ phone ]]
+                      
+                    <div class="md-form input-group mb-3 ">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text md-addon blue-text" id="phone">+254</span>
+                      </div>
+                      <input type="tel" class="form-control" v-model='phone' placeholder="Phone Number" aria-label="Phone" aria-describedby="phone">
+                    </div>
+  
+                    <button type="submit" class="btn btn-primary m-auto" @click.prevent="postform" > Pay Now </button>
+                    <hr>
+                  <p> Already paid? <a href="" @click.prevent="ishidden = !ishidden;status=!status" >Enter your mpesa code</a></p>
+                  </form>
+                  
+                </div>
+  
+              </section>
+  
+              <section v-show="!ishidden">
+                          
+                          <div>
+                            [[ message ]]
+                          <div v-show="!status" class="spinner-border" role="status">
+                                  <span class="sr-only">Loading...</span>
+                          </div>
+                      </div>
+                  
+                      <div v-cloak v-show="status">
+                        <p> Enter Your Transaction Code </p>
+  
+                        <form id="post-code" class=""> 
+                          
+                          <div class="md-form col-6 mx-auto mb-3">
+                            <input type="text" id="id_code" v-model="code" class="form-control" placeholder="Mpesa code" required>
+                            
+                          </div>
+                          
+                        <button type="submit" class="btn btn-primary m-auto" @click.prevent ="postcode"> Confirm payment </button>
+                        <hr>
+                        <p> Not yet paid? <a href="" @click.prevent="ishidden = !ishidden; status=!status" >Back</a></p>
+                        </form>
+  
+                        
+  
+                      </div>
+  
+                </section>
+  
+                
+  
+            </div>
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary btn-sm">Save changes</button>
+            </div> -->
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </mpayment>
+  
+  
+  
+  
+  <warning></warning>
+  
+  
+       <!-- Central Modal Medium Success -->
+  <div class="modal fade" id="centralModalSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog modal-notify modal-success" role="document">
+        <!--Content-->
+        <div class="modal-content">
+          <!--Header-->
+          <div class="modal-header">
+            <p class="heading lead"> Request Recieved </p>
+      
+            <button type="button" class="close" data-dismiss="modal" onclick="location.reload(true);" aria-label="Close">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+      
+          <!--Body-->
+          <div class="modal-body">
+            <div >
+              <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s"></i>
+              <h3> Reference : [[ ref ]] </h3>
+              
+             <p class="text-center"> Your request has been recieved sucesfully. Proceed to pay KES 250/= in order for you to recieve your Logins
+               in a matter of seconds. If you do not recieve your unlock within 2 minutes contact us via live chat with your reference code.
+              </p> 
+              
+            </div>
+  
+            <div class="mt-4 row mx-3">
+  
+              <a  class="green-text  col-lg-6 col-md-6" @click.prevent="mpesa_pay_toggle"> Pay with Mpesa </a>
+              <a href="" @click.prevent="clicked" class="green-text col-lg-6 col-md-6"> Pay with Paypal </a>
+  
+  
+            </div>
+          </div>
+      
+          <!--Footer-->
+          <div class="modal-footer justify-content-center">
+           
+            <a type="button" class="btn btn-outline-success waves-effect" onclick="location.reload(true);" data-dismiss="modal">Dismiss</a>
+          </div>
+        </div>
+        <!--/.Content-->
+      </div>
+      </div>
+      <!-- Central Modal Medium Success-->
+      
+  <success></success>
+<!--   
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#frameModalBottom">
+    Launch demo modal
+  </button> -->
+
 </main>
 
 {% endblock %}
 
 {% block scripts %}
+<style>
+    .modal-dialog .modal-content .modal-header {
+        border-top-left-radius: .125rem;
+        border-top-right-radius: .125rem;
+        height: fit-content;
+    }
+  </style>
+<script>
 
+    Vue.component("success", {
+            template: `
+                        
+                <div>      
+    
+                <b-modal id="success" 
+                content-class="shadow"
+                title="Transaction successful"
+                :header-bg-variant="headerBgVariant"
+                :header-text-variant="headerTextVariant"
+                :body-bg-variant="bodyBgVariant"
+                :body-text-variant="bodyTextVariant"
+                :footer-bg-variant="footerBgVariant"
+                :footer-text-variant="footerTextVariant"
+                @ok="handleOk"
+     
+                >
+    
+                <div class="text-center">
+    
+                        <i class="fas fa-check fa-4x mb-3 animated rotateIn delay-1s green-text"></i>
+                                        
+                       <P> 
+    
+                       Thank you for working with Freelancing Accounts Logins. Your Logins will be sent to you shortly. 
+                       Check Your email after 2 minutes.!!
+    
+                        </P>
+                 
+                                        
+                </div>
+    
+    
+                </b-modal>
+    
+                </div>
+            `,
+            data: function () {
+                return {
+                    show: false,
+                    variants: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'light', 'dark'],
+                    headerBgVariant: 'success',
+                    headerTextVariant: 'light',
+                    bodyBgVariant: 'light',
+                    bodyTextVariant: 'dark',
+                    footerBgVariant: 'success',
+                    footerTextVariant: 'light'
+                }
+    
+               
+            },
+            methods: {
+              handleOk () {
+                location.reload();
+              }
+            }
+    
+            
+    
+        });
+    
+        Vue.component("warning", {
+          delimiters: ['[[', ']]'],
+          template:` 
+          <section>
+           
+    
+            <div class="modal fade bottom" id="frameModalBottom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                  aria-hidden="true">
+    
+                  <!-- Add class .modal-frame and then add class .modal-bottom (or other classes from list above) to set a position to the modal -->
+                  <div class="modal-dialog modal-frame modal-bottom" role="document">
+    
+    
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <div class="row d-flex justify-content-center align-items-center">
+    
+                          <i class="fas fa-times fa-4x mb-3 animated rotateIn red-text text-center"></i> 
+    
+                          <p > [[ message ]]   </p>  
+                     
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                         
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+        </section>
+              `,
+          data: function () {
+                return {
+                  message:"Wrong format entered! Please follow the format provided.",
+                }},
+          mounted: function () {
+    
+            this.$root.$on("mywarning", (text) => {
+              this.message = text
+            })
+          }
+    
+        })
+       
+        Vue.component( "mpayment",  {
+    
+          data: function() {
+              return {
+                req_id: "",
+                phone: "",
+                ishidden:true,
+                code:"",
+                status:false,
+                message:"Pleas Wait ....."
+            }},
+          methods: {
+    
+            postform: function () {
+                    // alert("hey cicked");
+                    this.ishidden = !this.ishidden;
+                   
+                    axios.post('{% url "UnlocksApp:unlock_mpesa_pay" %}', {
+                    body: {
+                        "phone_number": "254"+this.phone,
+                        "amount": "250"
+                    }
+                    
+                    })
+                    .then(response => {
+                        message = response.data.message;
+                        message1= message.ResponseDescription
+                        console.log(response.data)
+                        if ("ResponseCode" in message) {
+                            this.status =true;
+                            this.message=message1; 
+                            
+                        }
+                        else {
+    
+                        this.$root.$emit("mywarning","Wrong format entered! Please follow the format provided.");
+                        $("#frameModalBottom").modal('show');
+                           
+                            
+                        };
+    
+    
+                    })
+                    .catch(e => {
+                    console.log(e);
+    
+                    });
+                },
+    
+            postcode: function () {
+                    axios.post('{% url "UnlocksApp:validate_mpesa_code" %}', {
+                        body: {
+                            "mpesa_code": this.code,
+                            "req_id" : this.req_id,
+                            "amount": 250
+                        }
+                    })
+                    .then(response => {
+                       console.log(response.data)
+                        if (response.data.message == "Transaction Successful") {
+    
+                          this.ishidden =!this.ishidden
+                          $("#centralModalSm").modal("hide");
+    
+                            this.$bvModal.show('success');
+                           
+                        }
+                        else {
+                        this.$root.$emit("mywarning",' The mpesa code entered is False. Please confirm if you have entered the right code!');
+                        $("#frameModalBottom").modal('show')
+                       };
+    
+    
+                    })
+                    .catch(e =>{
+                        console.log(e)
+                    });
+    
+    
+                        
+                    },
+    
+                    
+            validpay() {
+                  axios.post('{% url "UnlocksApp:valid_pay" %}', {
+                        body: {
+                            "phone": "254"+this.phone,
+                            "req_id" : this.req_id,
+                            
+                        }
+                    })
+                    .then(response => {
+                      console.log(response.data)
+                      // this.$bvModal.show('success');
+                       
+                        if (response.data.message == true) {
+    
+                          this.ishidden =!this.ishidden
+                          $("#centralModalSm").modal("hide");
+    
+                      
+                            this.$bvModal.show('success');
+                        }
+                        else {
+                        // console.log("not true");
+                        // this.init();
+                        }
+    
+                    })
+                    .catch(e =>{
+                      console.log(e)
+                    });
+    
+                  },
+                
+            init(){
+                  if (this.ishidden == false ) {
+                    console.log("hey polling")
+                    this.validpay();
+                  } 
+                }
+          
+          },
+    
+          mounted: function () { 
+            this.$root.$on('requestID', (text) => { // here you need to use the arrow function
+            this.req_id = text;
+    
+            });
+    
+            this.init();
+            console.log(this.ishidden, "is hidden status")
+                  
+    
+             setInterval(function () {
+                        this.init();
+                      }.bind(this), 5000); 
+                           
+            
+          },
+        
+    
+        });
+    
+        new Vue({
+            el: '#logins_app',
+            delimiters: ['[[', ']]'],
+            data: () =>  ({
+              ref: "REQ-123456368",
+              loader:true,
+    
+            }),
+            methods: {
+                post_logins() {
+                    this.loader =!this.loader
+                    var data = {
+                        'category':$("#id_category").val(),
+                        "full_names":$("#id_full_Names").val(),
+                        "email":$("#id_email").val(),
+                        
+                    }
+    
+                    console.log(data);
+                    
+                        axios.post('{% url "UnlocksApp:logins_post" %}', {
+                        body: data,
+                        })
+                        .then(res => {
+                            console.log(res.data)
+                            request_id = res.data.order_id
+                            this.ref = request_id
+                            $("input, textarea").val("");
+                            this.loader =!this.loader
+                            $("#centralModalSuccess").modal("show");
+                            this.$emit("requestID", request_id)
+                        })
+                        .catch(e => {
+                        console.log(e);
+    
+                        });
+    
+                },
+                
+    
+                mpesa_pay_toggle() {
+              $("#centralModalSuccess").modal("hide");
+              $("#centralModalSm").modal("show");
+    
+                },
+                clicked() {
+                  alert("Not yet Implemented, kinldy use Mpesa for Now")
 
+                }
+                
+            
+            },
+    
+           
+        })
+    
+    </script>
+    
 {% endblock %}

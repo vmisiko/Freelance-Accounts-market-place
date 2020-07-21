@@ -14,7 +14,7 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .serializers import LNMOnlineSerializer,C2bSerializer, B2cTransaction
-from . models  import LNMOnline,C2bTransaction, B2cTransaction
+from . models  import LNMOnline,C2bTransaction, B2cTransaction, LNMOnline2
 from Home.models import OrderItem, Order
 from dashboard.models import AccountsModel,Conversion
 from MpesaApp.models import LNMOnline
@@ -325,6 +325,80 @@ class LNMCallbackUrl(CreateAPIView):
 
         return Response(data)
 
+
+
+class LNM2CallbackUrl(CreateAPIView):
+    queryset = LNMOnline.objects.all()
+    serializer_class = LNMOnlineSerializer
+
+    permission_classes = [AllowAny]
+
+
+    def create(self, request):
+        print(request.data, "this is data")
+        result_description = request.data["Body"]["stkCallback"]["ResultDesc"]
+
+        try:
+            if result_description != "[STK_CB - ]DS timeout.":
+
+                merchant_request_id = request.data["Body"]["stkCallback"]["MerchantRequestID"]
+                print(merchant_request_id)
+                checkout_request_id = request.data["Body"]["stkCallback"]["CheckoutRequestID"]
+                print(checkout_request_id)
+                result_code = request.data["Body"]["stkCallback"]["ResultCode"]
+                print(result_code)
+                result_description = request.data["Body"]["stkCallback"]["ResultDesc"]
+                print(result_description)
+                amount = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][0]["Value"]
+                print(amount)
+                mpesa_reciept_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][1]["Value"] 
+                print(mpesa_reciept_number)
+                # balance = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][2]["Value"]
+                # print(balance)
+                transaction_date = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][3]["Value"]
+                print(transaction_date)
+                phone_number = request.data["Body"]["stkCallback"]["CallbackMetadata"]["Item"][4]["Value"]
+                print(phone_number) 
+
+            else:
+                print('the result descrption is timeout')
+        except:
+            print("error result failed")
+
+        from datetime import datetime
+        str_transaction_date = str(transaction_date)
+        print(str_transaction_date, "this is lnm datetime")
+        transaction_datetime = datetime.strptime(str_transaction_date,"%Y%m%d%H%M%S")
+        print(transaction_datetime) 
+
+        if not LNMOnline2.objects.filter(MpesaReceiptNumber=mpesa_reciept_number).exists():
+            transaction = LNMOnline2.objects.create(
+                MerchantRequestID  = merchant_request_id,
+                CheckoutRequestID = checkout_request_id,
+                ResultCode = result_code,
+                ResultDesc = result_description,
+                Amount = amount,
+                MpesaReceiptNumber = mpesa_reciept_number,
+                Balance = 0,
+                TranscationDate = transaction_datetime,
+                PhoneNumber = phone_number
+            )
+            
+            transaction.save() 
+        else:
+            pass
+            
+        data = {
+             "result_code" :result_code ,
+             "amount": amount
+
+                 }
+
+        
+
+        return Response(data)
+
+
 class C2bCallbackUrl(CreateAPIView):
     queryset = C2bTransaction.objects.all()
     serializer_class = C2bSerializer
@@ -424,3 +498,10 @@ class B2cCallbackUrl(CreateAPIView):
         }
 
         return Response(data)
+
+
+
+
+
+
+
