@@ -157,7 +157,7 @@ def unlocks_post(request):
     url = k["body"]["url"]
 
     unlock = Unlocks.objects.create(
-        user = request.user,
+        # user = request.user,
         full_Names = full_Names,
         category = category,
         email =   email,
@@ -190,7 +190,7 @@ def logins_post(request):
 
 
     login = Logins.objects.create(
-        user = request.user,
+        # user = request.user,
         full_Names = full_Names,
         category = category,
         email =   email, 
